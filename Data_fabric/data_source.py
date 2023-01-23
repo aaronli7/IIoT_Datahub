@@ -2,7 +2,7 @@
 Author: Qi7
 Date: 2023-01-23 13:21:38
 LastEditors: aaronli-uga ql61608@uga.edu
-LastEditTime: 2023-01-23 15:20:10
+LastEditTime: 2023-01-23 16:27:34
 Description: Generating Synthetic sine waveform and write to influxdb 2.6
 '''
 import numpy as np
@@ -31,7 +31,7 @@ F = 1 # frequency of the sine waveform
 Fs = 50 # sampling frequency
 Ts = 1./Fs
 Mag = 1 # magnitude 
-status = "abnormal"
+status = "normal"
 if status == "abnormal":
     # add gaussion noise to the signal
     noise = np.random.normal(0, 1*0.3)
