@@ -2,7 +2,7 @@
 Author: Qi7
 Date: 2023-01-23 13:21:38
 LastEditors: aaronli-uga ql61608@uga.edu
-LastEditTime: 2023-01-23 16:27:34
+LastEditTime: 2023-01-24 21:13:59
 Description: Generating Synthetic sine waveform and write to influxdb 2.6
 '''
 import numpy as np

@@ -2,7 +2,7 @@
 Author: Qi7
 Date: 2023-01-18 09:48:56
 LastEditors: aaronli-uga ql61608@uga.edu
-LastEditTime: 2023-01-24 11:34:04
+LastEditTime: 2023-01-24 20:30:35
 Description: slicing window for the array.
 '''
 import torch
@@ -20,7 +20,6 @@ def sliding_windows(array, sub_window_size, step_size, start_index=0):
         np.expand_dims(np.arange(sub_window_size), axis=0) +
         np.expand_dims(np.arange(num_windows - sub_window_size + 1), 0).T
     )
-    print(array[sub_windows[::step_size]].shape)
     return array[sub_windows[::step_size]]
 
 def extract_windows(array, clearing_time_index, max_time, sub_window_size):
@@ -79,5 +78,5 @@ def vectorized_stride_v2(array, clearing_time_index, max_time, sub_window_size,
 
 
 # testing
-x = [[1,11,111,1111],[5,6,7,8],[9,10,11,12],[2,3,4,5],[5,4,3,2],[2,3,4,1],[4,5,3,2],[2,3,1,4],[2,3,4,1],[2,3,4,1]]
-print(sliding_windows(x, sub_window_size=3, step_size=1))
+# x = [[1,11,111,1111],[5,6,7,8],[9,10,11,12],[2,3,4,5],[5,4,3,2],[2,3,4,1],[4,5,3,2],[2,3,1,4],[2,3,4,1],[2,3,4,1]]
+# print(sliding_windows(x, sub_window_size=3, step_size=1))
