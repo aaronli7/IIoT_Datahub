@@ -2,7 +2,7 @@
 Author: Qi7
 Date: 2023-01-23 13:21:38
 LastEditors: aaronli-uga ql61608@uga.edu
-LastEditTime: 2023-01-24 21:13:59
+LastEditTime: 2023-02-07 21:04:11
 Description: Generating Synthetic sine waveform and write to influxdb 2.6
 '''
 import numpy as np
@@ -10,7 +10,7 @@ import math
 import matplotlib.pyplot as plt
 import datetime, time
 import influxdb_client
-from influxdb_client.client.write_api import SYNCHRONOUS
+from influxdb_client.client.write_api import SYNCHRONOUS, ASYNCHRONOUS
 
 #
 token = "sSDR3urw9jxgsqq4q45MkUHZ4pqloQuKt_8MNTPoz8mEu4Nx4TRKXApZBTR-4QIz0XHcWrykWWm__9eoW9QLQQ=="
