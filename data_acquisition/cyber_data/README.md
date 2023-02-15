@@ -15,12 +15,8 @@ Dependencies needed to be installed -
 3. Wireshark
 4. Python
 
-
 Instructions to run network_data.py:
-
-
-
-1. Run the following command on the terminal after installing TShark - `tshark -D`. This will list all the interfaces on which we can capture. 
+1. Run the following command `tshark -D` on the terminal after installing TShark. This will list all the interfaces on which we can capture. 
 
 2. Run the following command on the terminal to start the script 
 ```bash
