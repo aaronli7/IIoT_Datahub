@@ -2,7 +2,7 @@
  * @Author: Qi7
  * @Date: 2023-02-14 16:30:22
  * @LastEditors: aaronli-uga ql61608@uga.edu
- * @LastEditTime: 2023-02-15 14:19:43
+ * @LastEditTime: 2023-02-15 14:22:17
  * @Description: 
 -->
 Using this script, all network data, packet count and traffic per protocol can be digested into InfluxDB. Packets using protocols such as ARP, TCP, UDP, DNS can be easily captured and processsed.
@@ -20,7 +20,7 @@ Instructions to run network_data.py:
 
 
 
-1. Run the following command on the terminal after installing TShark - "tshark -D". This will list all the interfaces on which we can capture. 
+1. Run the following command on the terminal after installing TShark - `tshark -D`. This will list all the interfaces on which we can capture. 
 
 2. Run the following command on the terminal to start the script 
 ```bash
