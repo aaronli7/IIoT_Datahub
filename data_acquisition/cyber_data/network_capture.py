@@ -81,8 +81,7 @@ def wiresharkRawData(protocol, src_MAC_Address, dst_MAC_Address, src_ip, dst_ip,
 def calcData(temp):
     # print(" CalcData running after 5 seconds")
     global _flag
-    # client.switch_database('CalcData')
-    measurement = "CalcData"
+    measurement = "cyberData"
     for key, value in temp.items():
         p = influxdb_client.Point(measurement) \
             .tag("Protocol", key) \
@@ -90,20 +89,6 @@ def calcData(temp):
             .field("Traffic", value[1])
             
         write_api.write(bucket=bucket, org=org, record=p)
-        # json_body = [
-        #     {
-        #         "measurement": "CalcData",
-        #         "tags": {
-        #             "Protocol":key
-        #         },
-        #         "fields":{
-        #             "Count": value[0],
-        #             "Traffic": value[1]
-        #         }
-        #     }
-
-        # ]       
-        # client.write_points(json_body, time_precision='n')
         
     _flag = True
             
@@ -113,7 +98,7 @@ def main():
     calcDict = {}
     for something in sys.stdin:
         packet = something.split()
-        print(packet)
+        # print(packet)
         time = int(float(packet[0]))
         protocol = str(packet[1])
         length = int(packet[2])
@@ -183,10 +168,7 @@ def main():
             t5 = Timer(5, calcData, [temp])
             t5.start()
             _flag = False
-            
-        
         #print("Success!")
-     
 
 if __name__ == '__main__':
     main()
