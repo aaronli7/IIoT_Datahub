@@ -3,11 +3,11 @@
  # @Author: Qi7
  # @Date: 2023-02-14 16:54:23
  # @LastEditors: aaronli-uga ql61608@uga.edu
- # @LastEditTime: 2023-02-14 17:03:42
+ # @LastEditTime: 2023-02-15 14:07:52
  # @Description: capturing the packets using tshark. Usage: 
  #              ./packet_capture.sh <name-of-interface>
 ### 
-if [ $# -eq 0]
+if [ $# -eq 0 ]
     then
         echo "Please provide the <name-of-interface>"
         exit 1
