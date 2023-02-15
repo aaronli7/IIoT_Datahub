@@ -6,66 +6,104 @@
 import sys
 from datetime import datetime
 from threading import Timer
-from influxdb import InfluxDBClient
-isSSL = True
-client = InfluxDBClient(host="sensorwebdata.engr.uga.edu", port=8086, username="test", password="sensorweb", ssl = isSSL)
+import pytz
+import warnings
+import influxdb_client
+from influxdb_client.client.write_api import SYNCHRONOUS, ASYNCHRONOUS
+warnings.filterwarnings("ignore")
+
+time_format = "%Y-%m-%d %H:%M:%S"
+tz_NY = pytz.timezone("America/New_York")
+
+#influxdb config
+token = "0ML4vBa-81dGKI3_wD-ReiSRdLggdJPXKoTKLPITBcOZXl8MJh7W8wFSkNUNM_uPS9mJpzvBxUKfKgie0dHiow=="
+org = "lab711"
+bucket = "testbed"
+url = "sensorwebdata.engr.uga.edu:8086"
+measurement = "NI_Waveform"
+
+client = influxdb_client.InfluxDBClient(
+    url=url,
+    token=token,
+    org=org
+)
+
+write_api = client.write_api(write_options=SYNCHRONOUS)
 
 currentTime = datetime.now()
 timestamp = int(currentTime.timestamp()*1000000000)
 _flag = True
-import warnings
-warnings.filterwarnings("ignore")
 
 ### start a timer here refer: https://github.com/SongClass/SimTCP 
-
-
 class RepeatTimer(Timer):
    def run(self):
         while not self.finished.wait(self.interval):
             self.function(*self.args, **self.kwargs)
 
-def wiresharkRawData(protocol, src_MAC_Address, dst_MAC_Address, src_ip, dst_ip, src_port, dst_port, ttt, length):
-        client.switch_database("WiresharkRawData")
-        json_body = [
-            {
-                "measurement": "WiresharkRawData",
-                "tags": {
-                    "Protocol":protocol,
-                    "Source MAC": src_MAC_Address,
-                    "Destination MAC": dst_MAC_Address,
-                    "Source IP":src_ip,
-                    "Destination IP":dst_ip,
-                    "Source Port": src_port,
-                    "Destination Port": dst_port
-                },
-                "fields":{
-                    "Length": length
-                },
-                "time":ttt
-            }
+def wiresharkRawData(protocol, src_MAC_Address, dst_MAC_Address, src_ip, dst_ip, src_port, dst_port, timestamp, length):
+        measurement = "WiresharkRawData"
+        
+        p = influxdb_client.Point(measurement) \
+            .tag("Protocol", protocol) \
+            .tag("Source MAC", src_MAC_Address) \
+            .tag("Destination MAC", dst_MAC_Address) \
+            .tag("Source IP", src_ip) \
+            .tag("Destination IP", dst_ip) \
+            .tag("Source Port", src_port) \
+            .tag("Destination Port", dst_port) \
+            .field("Length", length) \
+            .time(timestamp)
+            
+        # Global variable
+        write_api.write(bucket=bucket, org=org, record=p)
+        # client.switch_database("WiresharkRawData")
+        # json_body = [
+        #     {
+        #         "measurement": "WiresharkRawData",
+        #         "tags": {
+        #             "Protocol":protocol,
+        #             "Source MAC": src_MAC_Address,
+        #             "Destination MAC": dst_MAC_Address,
+        #             "Source IP":src_ip,
+        #             "Destination IP":dst_ip,
+        #             "Source Port": src_port,
+        #             "Destination Port": dst_port
+        #         },
+        #         "fields":{
+        #             "Length": length
+        #         },
+        #         "time":ttt
+        #     }
 
-        ]
-        client.write_points(json_body, time_precision='n')
+        # ]
+        # client.write_points(json_body, time_precision='n')
 
 def calcData(temp):
-    print(" CalcData running after 5 seconds")
+    # print(" CalcData running after 5 seconds")
     global _flag
-    client.switch_database('CalcData')
+    # client.switch_database('CalcData')
+    measurement = "CalcData"
     for key, value in temp.items():
-        json_body = [
-            {
-                "measurement": "CalcData",
-                "tags": {
-                    "Protocol":key
-                },
-                "fields":{
-                    "Count": value[0],
-                    "Traffic": value[1]
-                }
-            }
+        p = influxdb_client.Point(measurement) \
+            .tag("Protocol", key) \
+            .field("Count", value[0]) \
+            .field("Traffic", value[1])
+            
+        write_api.write(bucket=bucket, org=org, record=p)
+        # json_body = [
+        #     {
+        #         "measurement": "CalcData",
+        #         "tags": {
+        #             "Protocol":key
+        #         },
+        #         "fields":{
+        #             "Count": value[0],
+        #             "Traffic": value[1]
+        #         }
+        #     }
 
-        ]       
-        client.write_points(json_body, time_precision='n')
+        # ]       
+        # client.write_points(json_body, time_precision='n')
         
     _flag = True
             
