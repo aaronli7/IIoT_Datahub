@@ -99,9 +99,13 @@ def main():
     for something in sys.stdin:
         packet = something.split()
         # print(packet)
-        time = int(float(packet[0]))
-        protocol = str(packet[1])
-        length = int(packet[2])
+        try:
+            time = int(float(packet[0]))
+            protocol = str(packet[1])
+            length = int(packet[2])
+        except ValueError as ve:
+            print("Drop the packet with incorrect format. Drop and collect continuely.")
+            continue
         if len(packet) == 9:
             src_MAC_Address = packet[3]
             dst_MAC_Address = packet[4]
