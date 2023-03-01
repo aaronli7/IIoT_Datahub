@@ -3,7 +3,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 
 hidden_dim = 256
-n_layers=2
+n_layers=1
 
 class LSTMRegressor(nn.Module):
     def __init__(self, n_features):
