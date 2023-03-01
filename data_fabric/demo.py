@@ -2,7 +2,7 @@
 Author: Qi7
 Date: 2023-02-08 09:40:57
 LastEditors: aaronli-uga ql61608@uga.edu
-LastEditTime: 2023-02-08 09:54:27
+LastEditTime: 2023-02-28 20:17:24
 Description: 
 '''
 # An quick example of showing how to do the online analysis with Pi's systematic data
@@ -14,7 +14,7 @@ import influxdb_client
 from influxdb_client.client.write_api import SYNCHRONOUS
 import sys
 sys.path.append('../')
-from AI_engine.uils import sliding_windows # import helper function from AI engine module
+from utils.sliding_window import sliding_windows # import helper function from AI engine module
 
 token = "S-Ohm_ZbcIZfp5_2BgXnSTInDGtjfwJi3uXhij1DR3U1b_83GWkv5CBrHqKjBD5LtRmKYmJ-s5fDGqH7AZ_gLw=="
 bucket = "testbed"
