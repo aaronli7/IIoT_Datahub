@@ -3,3 +3,6 @@
 .DS_Store
 *.pyc
 *.ini
+configs
+dataset
+*.pt

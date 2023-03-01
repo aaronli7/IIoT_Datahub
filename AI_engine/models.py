@@ -6,7 +6,7 @@ hidden_dim = 256
 n_layers=2
 
 class LSTMRegressor(nn.Module):
-    def __init__(self):
+    def __init__(self, n_features):
         super(LSTMRegressor, self).__init__()
         self.lstm = nn.LSTM(input_size=n_features, hidden_size=hidden_dim, num_layers=n_layers, batch_first=True)
         self.linear = nn.Linear(hidden_dim, 1)
