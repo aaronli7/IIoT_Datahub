@@ -25,13 +25,13 @@ time_format = "%Y-%m-%d %H:%M:%S"
 tz_NY = pytz.timezone("America/New_York")
 
 #influxdb config
-if sys.argv[1] == 'lab711'
+if sys.argv[1] == 'uga'
     token = "0ML4vBa-81dGKI3_wD-ReiSRdLggdJPXKoTKLPITBcOZXl8MJh7W8wFSkNUNM_uPS9mJpzvBxUKfKgie0dHiow=="
     org = "lab711"
     bucket = "testbed"
     url = "sensorwebdata.engr.uga.edu:8086"
     measurement = "NI_Waveform"
-elif sys.argv[1] == 'AAS'
+elif sys.argv[1] == 'aas'
     token = "F18iTk0we6pA4iixSlWR4TMFJv0so4R1HWSWCE6cHBzBgOvUvquA5jEI06n8hMkkZ5pPz_sFbLSUidB3kwFyBw=="
     org = "james.hill@agingaircraft.us"
     bucket = "uga test"
