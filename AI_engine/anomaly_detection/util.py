@@ -2,7 +2,7 @@
 Author: Qi7
 Date: 2023-03-02 11:28:10
 LastEditors: aaronli-uga ql61608@uga.edu
-LastEditTime: 2023-03-02 11:29:46
+LastEditTime: 2023-03-02 14:26:22
 Description: 
 '''
 #!/usr/bin/env python3
@@ -33,7 +33,6 @@ def write_influx2(influx, unit, table_name, data_name, data, start_timestamp, fs
     for value in data:
         count += 1
         if count >= max_size:
-            print("Write to influx: ", table_name, data_name, count)
             p = influxdb_client.Point(table_name).tag("location", unit).field(data_name, value).time(start)
             write_api.write(bucket=bucket, org=org, record=p)
             total = total - count
@@ -65,9 +64,7 @@ def read_influx2(influx, unit, table_name, data_name, start_timestamp, pre_len, 
     |> filter(fn:(r) => r._measurement == "{table_name}")\
     |> filter(fn:(r) => r._field == "{data_name}" )\
     |> limit(n:{pre_len})'
-    
-    print(query)
-    
+        
     result = query_api.query(org=org, query=query)
     data, times = [], []
     for table in result:

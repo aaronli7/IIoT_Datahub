@@ -2,17 +2,16 @@
 Author: Qi7
 Date: 2023-03-02 11:10:23
 LastEditors: aaronli-uga ql61608@uga.edu
-LastEditTime: 2023-03-02 12:46:44
+LastEditTime: 2023-03-02 14:20:16
 Description: online anomly detection with SST
 '''
 from util import *
+from fastsst.sst import *
 from datetime import datetime
 from influxdb_client.client.write_api import SYNCHRONOUS, ASYNCHRONOUS
 import time
 import sys, os
 import warnings
-import algorithm as alg
-import algorithm_detect as detect
 import numpy as np
 
 warnings.filterwarnings("ignore")
@@ -55,6 +54,8 @@ def main():
     epoch2 = current
     startEpoch = datetime.fromtimestamp(epoch2).isoformat()
     
+    numTry = 0 
+    MAXTRY = 100 # max try of 100 seconds
     fs = 10
     epoch1 = epoch2 + pre_len/fs
     epoch2_ios = datetime.fromtimestamp(epoch2).isoformat()
@@ -66,3 +67,39 @@ def main():
     print(f"time length of the window: {times[-1] - times[0]}")
     
     score_start = np.zeros(1) # get the initial score
+    
+    x1 = np.random.rand(order)
+    
+    score, x1 = SingularSpectrumTransformation(win_length=win_length, x0=x1, n_components=2,order=order, lag=lag,is_scaled=True).score_online(startdata)
+    score_start = score + score_start * 10 ** 5
+    
+    print(f"start score: {score_start}")
+    
+    # infinite loop
+    j = 0
+    while True:
+        j = j + 1
+        epoch2 += pre_len / fs
+        if verbose: print(f"epoch1: {epoch1}; epoch2: {epoch2}")
+        if (endSet == False and (current - epoch2) < 1):
+            times.sleep(1)
+        
+        if (endSet and epoch2 > endEpoch):
+            if(debug): print("**** Ended as ", epoch2, " > ", end, " ***")
+            if(len(sys.argv) < 3):
+                quit()
+        
+        print('start:', epoch1, 'end:', epoch2)
+        epoch2_ios = datetime.fromtimestamp(epoch2).isoformat()
+        
+        try:
+        #############################  CHANGE TO NEW FORMAT
+            values, times = read_influx2(src, location, 'NI_Waveform', 'sensor1_AC_mag', epoch2_ios, pre_len, startEpoch)
+            if verbose: print(f"length of the data being through :{len(values)}")
+        except Exception as e:
+            print("main(), no data in the query time period:")
+            print("Error", e)
+            time.sleep(1)
+            numTry += 1
+            if (numTry > MAXTRY):            
+                quit()
