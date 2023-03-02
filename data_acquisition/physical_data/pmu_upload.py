@@ -64,8 +64,10 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
             data = conn.recv(6*2000*4*8)  # 6 channels * 2khz * 4bytes * 8bit
             if not data:
                 break
-
-            data_array = json.loads(data.decode())
+            try:
+                data_array = json.loads(data.decode())
+            except:
+                continue
             value_list = data_array
             value_list = df_int_to_float(value_list)
             value_list = np.array(value_list)
