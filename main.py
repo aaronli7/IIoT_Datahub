@@ -2,7 +2,7 @@
 Author: Qi7
 Date: 2023-02-28 22:07:04
 LastEditors: aaronli-uga ql61608@uga.edu
-LastEditTime: 2023-03-01 10:38:12
+LastEditTime: 2023-03-08 08:10:00
 Description: 
 '''
 from utils.sliding_window import sliding_windows
@@ -100,4 +100,4 @@ for i in range(len(diff)):
 print(diff)
 plt.figure(figsize=(10,8))
 plt.plot(diff)
-plt.show()
+# plt.show()
