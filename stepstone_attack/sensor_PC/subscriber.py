@@ -1,5 +1,4 @@
 # subscriber.py
-
 import paho.mqtt.client as mqtt
 import sys
 from pathlib import Path
@@ -23,12 +22,22 @@ def on_message(client, userdata, msg):
     command_file.write(motor_command)
     command_file.close()
 
-client = mqtt.Client()
-client.on_connect = on_connect
-client.on_message = on_message
-#print(status)
-client.will_set('raspberry/status',  b'{"status": "Off"}')
+def main():
+    client = mqtt.Client()
+    client.on_connect = on_connect
+    client.on_message = on_message
+    #print(status)
+    client.will_set('raspberry/status',  b'{"status": "Off"}')
 
-client.connect("broker.emqx.io", 1883, 60)
+    client.connect("broker.emqx.io", 1883, 60)
 
-client.loop_forever()
+    client.loop_forever()
+
+
+if __name__ == "__main__":
+    progname = sys.argv[0]
+    if len(sys.argv) < 2:
+        print(f"Usage: python3 {progname} <topic> ")
+        print(f"Example: python3 {progname} motor1 (subscribe the topic 'motor1')")
+        exit()
+    main()
