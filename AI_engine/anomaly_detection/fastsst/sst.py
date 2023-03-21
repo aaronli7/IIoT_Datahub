@@ -21,9 +21,37 @@ THE SOFTWARE.
 """
 
 import numpy as np
+import time
 from numba import jit
 from sklearn.preprocessing import MinMaxScaler
 from .util.linear_algebra import power_method, lanczos, eig_tridiag
+
+
+def start_SST(startdata,win_length,n_component,order,lag):
+    Score_start=np.zeros(1) # get the initial score, Score_start
+    x1 = np.empty(order, dtype=np.float64) 
+    x1 = np.random.rand(order)
+    x1 /= np.linalg.norm(x1)
+    score_start, x = SingularSpectrumTransformation(win_length=win_length, x0=x1, n_components=n_component,order=order, lag=lag,is_scaled=True).score_online(startdata)
+    Score_start=score_start+Score_start*10**7
+    return Score_start,x
+
+
+#### After that we could use the output of start_SST function to initialize the infinite loop
+
+def stream_SST(stream,win_length,n_component,order,lag,x0):  #state_last,thres1,thres2
+  ### stream is the new data coming through
+  ### last data is the data from the last second
+  starttime=time.time()
+  
+  #data=np.concatenate((lastdata[lag:], stream), axis=None)
+  data=stream
+  score, x1 = SingularSpectrumTransformation(win_length=win_length, x0=x0, n_components=n_component,order=order, lag=lag,is_scaled=True).score_online(data)
+  score=score*10**5
+
+  end=time.time()
+  duration=end-starttime
+  return score,duration,x1
 
 
 class SingularSpectrumTransformation():

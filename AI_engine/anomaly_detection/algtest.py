@@ -10,8 +10,7 @@ import time
 import operator
 import sys, os
 import logging
-import algorithm as alg
-import algorithm_detect as detect
+from fastsst.sst import *
 #from scipy import stats
 import nitime.algorithms as nt_alg
 import numpy as np
@@ -101,7 +100,7 @@ def main():
  buffer      = []
  buffertime  = []
 
- alg.logpath = ""
+#  alg.logpath = ""
 # Getting the user input parameters
 #  global ip, rip
 
@@ -229,7 +228,7 @@ def main():
  x1 = np.random.rand(order)
  print("shape of x1:",x1.shape)
  x1 /= np.linalg.norm(x1)
- score_start, x1 = detect.SingularSpectrumTransformation(win_length=win_length, x0=x1, n_components=2,order=order, lag=lag,is_scaled=True).score_online(startdata)
+ score_start, x1 = SingularSpectrumTransformation(win_length=win_length, x0=x1, n_components=2,order=order, lag=lag,is_scaled=True).score_online(startdata)
  Score_start=score_start+Score_start*10**5
 
 
@@ -325,7 +324,7 @@ def main():
     stream=np.array(data)  #### the new data coming through
     print("Shape of stream data: ",stream.shape)
     # lastdata=start ### the initial start of the algorithm
-    score,duration,x1=detect.stream_SST(stream,win_length,n_component=2,order=order,lag=lag,x0=x1) #,state_last=state,thres1=thres1,thres2=thres2
+    score,duration,x1=stream_SST(stream,win_length,n_component=2,order=order,lag=lag,x0=x1) #,state_last=state,thres1=thres1,thres2=thres2
     print("score of this window:", score)
 
     if score >= thres1:  #and state_last==0  
