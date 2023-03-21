@@ -2,7 +2,7 @@
 Author: Qi7
 Date: 2023-03-02 11:10:23
 LastEditors: aaronli-uga ql61608@uga.edu
-LastEditTime: 2023-03-02 14:20:16
+LastEditTime: 2023-03-02 23:08:33
 Description: online anomly detection with SST
 '''
 from util import *
@@ -103,3 +103,5 @@ def main():
             numTry += 1
             if (numTry > MAXTRY):            
                 quit()
+        
+        
