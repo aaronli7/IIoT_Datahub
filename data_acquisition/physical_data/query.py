@@ -2,7 +2,7 @@
 Author: Qi7
 Date: 2023-04-04 15:58:55
 LastEditors: aaronli-uga ql61608@uga.edu
-LastEditTime: 2023-04-04 16:50:07
+LastEditTime: 2023-04-04 16:54:52
 Description: 
 '''
 import numpy as np
@@ -22,8 +22,8 @@ bucket = "testbed"
 url = "sensorwebdata.engr.uga.edu:8086"
 
 # Query script
-start = "2023-04-03T20:05:00Z"
-stop = "2023-04-03T20:10:00Z"
+start = "2023-04-03T18:05:00Z"
+stop = "2023-04-03T19:05:00Z"
 measurement = "NI_Waveform"
 tag = "lab711"
 
@@ -47,4 +47,4 @@ query = f'from(bucket:"{bucket}")\
 pd_results = query_api.query_data_frame(query) # to pandas dataframe
 pd_results = pd_results.drop(columns=['result', 'table', '_start', '_stop', '_measurement']) # drop the unrelated columns
 
-pd_results.to_csv('physical_attack_motor3_spike.csv')
+pd_results.to_csv('physical_normal.csv')
