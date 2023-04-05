@@ -2,7 +2,7 @@
 Author: Qi7
 Date: 2023-04-04 19:53:35
 LastEditors: aaronli-uga ql61608@uga.edu
-LastEditTime: 2023-04-05 09:40:05
+LastEditTime: 2023-04-05 09:57:41
 Description: 
 '''
 #%%
@@ -19,23 +19,19 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.manifold import TSNE
 
-df = pd.read_csv('cyber_final.csv')
+df = pd.read_csv('physical_final.csv')
 
 
 #%%
 # Drop the unrelated protocols
-drop_protocol = ['BJNP', 'BROWSER', 'DB-LSP-DISC']
-df = df[df.Protocol.isin(drop_protocol) == False]
 
 class_encoder = LabelEncoder()
 scaler = MinMaxScaler()
 df['class_1'] = class_encoder.fit_transform(df['class_1'])
 df['class_2'] = class_encoder.fit_transform(df['class_2'])
-df_protocol = pd.get_dummies(df['Protocol'])
-df_clean = df[['Count', 'Traffic', 'class_1', 'class_2']]
-df_clean = pd.concat([df_protocol, df_clean], axis=1)
+df_clean = df[['sensor1_AC_angle', 'sensor1_AC_freq', 'sensor1_AC_mag', 'sensor1_AC_thd', 'sensor1_DC_angle', 'sensor1_DC_freq', 'sensor1_DC_mag', 'sensor1_DC_thd', 'sensor2_AC_angle', 'sensor2_AC_freq', 'sensor2_AC_mag', 'sensor2_AC_thd', 'sensor2_DC_angle', 'sensor2_DC_freq', 'sensor2_DC_mag', 'sensor2_DC_thd', 'class_1', 'class_2']]
 
-binary_class1 = df['class_1'].astype('category')
+binary_class1 = df['class_2'].astype('category')
 label_color = ['green' if i==1 else 'Red' for i in binary_class1]
 
 # dataframe for PCA : PCA can not have 'categorical' features
@@ -56,7 +52,7 @@ normalized_df = (df_tmp - df_tmp.mean()) / df_tmp.std()
 # plt.show()
 # %%
 features = normalized_df.to_numpy()
-targets =  df_clean['class_1'].to_numpy()
+targets =  df_clean['class_2'].to_numpy()
 
 # split the training and test data
 train_features, test_features, train_targets, test_targets = train_test_split(
@@ -92,7 +88,8 @@ tsne_result = tsne.fit_transform(features)
 tsne_result = pd.DataFrame(tsne_result)
 tsne_result.columns = ['tsne component 1', 'tsne component 2']
 tsne_result.plot.scatter(x='tsne component 1', y='tsne component 2', marker='o',
-        alpha=0.5, # opacity
+        alpha=0.3, # opacity
         color=label_color,
         title="red: attack, green: normal" )
 plt.show()
+# %%
