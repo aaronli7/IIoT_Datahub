@@ -6,3 +6,5 @@
 configs
 dataset
 *.pt
+*.png
+*.zip
