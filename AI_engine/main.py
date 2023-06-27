@@ -31,6 +31,11 @@ from sklearn.model_selection import StratifiedKFold, train_test_split
 import load_data
 import few_shot.loader as loader
 import few_shot.model as models
+import few_shot.training as training
+
+p = Path('.')
+save_eval_path = p / "evaluation_results/"
+save_model_path = p / "saved_models/"
 
 x = load_data.load('X.npy')
 y = load_data.load('y.npy')
@@ -72,3 +77,18 @@ testloader = DataLoader(testset, shuffle=False, batch_size=1024) # get all the s
 model = models.LSTM(input_size=6, seq_num=2000, num_class=8)
 model.to(device)
 optimizer = optim.Adam(model.parameters(), lr=learning_rate)
+
+# model training
+
+training.model_train_multiclass(
+    model=model,
+    train_loader=trainloader,
+    val_loader=testloader,
+    num_epochs=num_epochs,
+    optimizer=optimizer,
+    device=device,
+    history=history
+)
+
+torch.save(model.state_dict(), save_model_path / f"multiclass_epochs{num_epochs}_lr_{learning_rate}_bs_{batch_size}_best_model.pth")
+np.save(save_eval_path / f"multiclass_epochs{num_epochs}_lr_{learning_rate}_bs_{batch_size}_history.npy", history)
