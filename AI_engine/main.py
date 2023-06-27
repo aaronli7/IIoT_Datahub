@@ -25,6 +25,9 @@ from torchinfo import summary
 from sklearn.model_selection import train_test_split
 from torch.nn import functional as F
 
+from sklearn.preprocessing import normalize
+from sklearn.model_selection import StratifiedKFold, train_test_split
+
 import load_data
 import few_shot.loader as loader
 
@@ -47,3 +50,24 @@ X_test = np.transpose(X_test,(0,2,1))
 
 training_set = loader.waveformDataset(X_train, y_train)
 test_set = loader.waveformDataset(X_test, y_test)
+
+#X = np.transpose(X, (0,2,1)) # transpose to match the lstm standard
+#y = np.expand_dims(y, axis=1)
+#X_train, X_test, y_train, y_test = train_test_split(X, y, train_size=0.8, shuffle=True, random_state=7)
+trainset = training_set
+testset = test_set
+
+# Hyper parameters
+batch_size = 256
+learning_rate = 0.001
+num_epochs = 500
+history = dict(train_loss=[], test_loss=[], train_acc=[], test_acc=[], train_f1=[], test_f1=[], test_f1_all=[])
+
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+#device = "cpu"
+
+trainloader = DataLoader(trainset, shuffle=True, batch_size=batch_size)
+testloader = DataLoader(testset, shuffle=False, batch_size=1024) # get all the samples at once
+model = LSTM(input_size=6, seq_num=2000, num_class=8)
+model.to(device)
+optimizer = optim.Adam(model.parameters(), lr=learning_rate)
