@@ -20,7 +20,8 @@ class LSTM(nn.Module):
         )
         self.num_class = num_class
         self.dropout = nn.Dropout(0.2)
-        self.linear = nn.Linear(512, self.num_class)
+        #self.linear = nn.Linear(512, self.num_class)
+        self.linear = nn.Linear(256, self.num_class)
         self.sigmoid = nn.Sigmoid()
         
     def forward(self, x):
