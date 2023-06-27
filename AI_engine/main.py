@@ -30,6 +30,7 @@ from sklearn.model_selection import StratifiedKFold, train_test_split
 
 import load_data
 import few_shot.loader as loader
+import few_shot.model as models
 
 x = load_data.load('X.npy')
 y = load_data.load('y.npy')
@@ -68,6 +69,6 @@ device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 trainloader = DataLoader(trainset, shuffle=True, batch_size=batch_size)
 testloader = DataLoader(testset, shuffle=False, batch_size=1024) # get all the samples at once
-model = LSTM(input_size=6, seq_num=2000, num_class=8)
+model = models.LSTM(input_size=6, seq_num=2000, num_class=8)
 model.to(device)
 optimizer = optim.Adam(model.parameters(), lr=learning_rate)
