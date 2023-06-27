@@ -6,7 +6,8 @@ from pandas import read_csv
 from pathlib import Path
 
 import influxdb_client
-from tsai.all import *
+import tsai
+#from tsai.all import *
 
 import re
 import pytz
