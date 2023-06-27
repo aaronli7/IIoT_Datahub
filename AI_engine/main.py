@@ -26,6 +26,7 @@ from sklearn.model_selection import train_test_split
 from torch.nn import functional as F
 
 import load_data
+import few_shot.loader as loader
 
 x = load_data.load('X.npy')
 y = load_data.load('y.npy')
@@ -44,5 +45,5 @@ X_test = np.transpose(X_test,(0,2,1))
 #y_train = np.expand_dims(y_train,axis=1)
 #y_test = np.expand_dims(y_test,axis=1)
 
-training_set = waveformDataset(X_train, y_train)
-test_set = waveformDataset(X_test, y_test)
+training_set = loader.waveformDataset(X_train, y_train)
+test_set = loader.waveformDataset(X_test, y_test)
