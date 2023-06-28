@@ -69,7 +69,7 @@ learning_rate = 0.001
 num_epochs = 500
 history = dict(train_loss=[], test_loss=[], train_acc=[], test_acc=[], train_f1=[], test_f1=[], test_f1_all=[])
 
-device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+device = torch.device("cuda:2" if torch.cuda.is_available() else "cpu")
 #device = "cpu"
 
 trainloader = DataLoader(trainset, shuffle=True, batch_size=batch_size)
