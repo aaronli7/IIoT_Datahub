@@ -5,7 +5,7 @@ from pandas import read_csv
 from pathlib import Path
 
 p = Path('.')
-datapath = p / "test_data/"
+datapath = p / "AI_engine/test_data/"
 
 def load(data_filename):
   data_file = np.load(datapath / data_filename)
