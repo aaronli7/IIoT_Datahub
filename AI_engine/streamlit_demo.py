@@ -79,17 +79,20 @@ for t in names:
     titles.append(tn)
     titles.append(ts)
 
-fig1 = make_subplots(rows=1,cols=1,subplot_titles = ['Sample Data'])
+#fig1 = make_subplots(rows=1,cols=1,subplot_titles = ['Sample Data'])
 
 #"""
-i = 1
+#x_min, x_max = X_train[:, 0].min() - 0.5, X_train[:, 0].max() + 0.5
+#y_min, y_max = X_test[:, 1].min() - 0.5, X_test[:, 1].max() + 0.5
 
-x_min, x_max = X_train[:, 0].min() - 0.5, X_train[:, 0].max() + 0.5
-y_min, y_max = X_test[:, 1].min() - 0.5, X_test[:, 1].max() + 0.5
+samples = np.arange(len(X_train[0,:]))
+print("samples: ",samples)
 
 # Plot Training Set
-fig1.append_trace(go.Scatter(x = np.arange(len(X_train[0,:])),y = X_train[0,:],),row=i,col=1)
-fig1
+#fig1.append_trace(go.Scatter(x = samples,y = X_train[0,:]),row=1,col=1)
+#fig1.show()
+
+plt.scatter(x = samples,y = X_train[0,:])
 
 # Plot Testing Set
 #fig1.append_trace(go.Scatter(x = X_test[:, 0],y = X_test[:, 1],),row=i,col=1)
@@ -116,6 +119,6 @@ for j in range(len(names)):
     #RocCurveDisplay(fpr=fpr, tpr=tpr, roc_auc=roc_auc,estimator_name=grid_search)
 
 plt.tight_layout()
-plt
+plt#.show()
 #fig1.show()
 #"""
