@@ -34,8 +34,8 @@ import few_shot.model as models
 import few_shot.training as training
 
 p = Path('.')
-save_eval_path = p / "evaluation_results/"
-save_model_path = p / "saved_models/"
+save_eval_path = p / "evaluation_results"
+save_model_path = p / "saved_models"
 
 x = load_data.load('X.npy')
 y = load_data.load('y.npy')
