@@ -1,4 +1,5 @@
 import sys
+import os
 import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
@@ -32,6 +33,7 @@ from sklearn.metrics import ConfusionMatrixDisplay, classification_report, RocCu
 
 from plotly.subplots import make_subplots
 import plotly.graph_objects as go
+import plotly.express as px
 
 import joblib
 
@@ -39,13 +41,16 @@ import load_data
 import sk_classifier_builder as skb
 import sk_classifier_metrics as skm
 
+st.title('Streamlit Demo')
+
 p = Path('.')
 
-save_eval_path = p / "AI_engine/evaluation_results"
-save_model_path = p / "AI_engine/saved_models"
+save_eval_path = p / "AI_engine/evaluation_results/"
+save_model_path = p / "AI_engine/saved_models/"
 datapath = p / "AI_engine/test_data/"
 
-data = np.load(datapath / "synthetic_dataset.npy")
+data = np.load("C:/Users/steph/OneDrive/Documents/GitHub/IIoT_Datahub/AI_engine/test_data/synthetic_dataset.npy")
+#data = np.load(datapath / "synthetic_dataset.npy")
 
 #print("shape of  data is ",data.shape)
 
@@ -79,23 +84,21 @@ for t in names:
     titles.append(tn)
     titles.append(ts)
 
-#fig1 = make_subplots(rows=1,cols=1,subplot_titles = ['Sample Data'])
-
 #"""
 #x_min, x_max = X_train[:, 0].min() - 0.5, X_train[:, 0].max() + 0.5
 #y_min, y_max = X_test[:, 1].min() - 0.5, X_test[:, 1].max() + 0.5
 
 samples = np.arange(len(X_train[0,:]))
-print("samples: ",samples)
+#print("samples: ",samples)
 
 # Plot Training Set
-#fig1.append_trace(go.Scatter(x = samples,y = X_train[0,:]),row=1,col=1)
-#fig1.show()
-
-plt.scatter(x = samples,y = X_train[0,:])
+fig1 = px.scatter(x = samples,y = X_train[0,:],title="Sample Data Entry")
+st.plotly_chart(fig1)
 
 # Plot Testing Set
 #fig1.append_trace(go.Scatter(x = X_test[:, 0],y = X_test[:, 1],),row=i,col=1)
+
+fig2, ax = plt.subplots(1,len(names))
 
 # iterate over classifiers
 for j in range(len(names)):
@@ -108,7 +111,7 @@ for j in range(len(names)):
     y_pred = grid_search.predict(X_test)
     print(classification_report(y_test, y_pred))
     ConfusionMatrixDisplay.from_estimator(grid_search, X_test, y_test, xticks_rotation="vertical")
-
+    
     #if j == 0:
     #    fig_0 = skb.plot_cv_results(grid_search.cv_results_, 'decision__criterion', 'decision__max_depth')
     #elif j == 1:
@@ -119,6 +122,7 @@ for j in range(len(names)):
     #RocCurveDisplay(fpr=fpr, tpr=tpr, roc_auc=roc_auc,estimator_name=grid_search)
 
 plt.tight_layout()
-plt#.show()
+st.pyplot(plt)
+#plt.show()
 #fig1.show()
 #"""
