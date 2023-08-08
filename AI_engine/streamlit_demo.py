@@ -6,7 +6,7 @@ import pandas as pd
 from pandas import read_csv
 from pathlib import Path
 
-import streamlit as st
+#import streamlit as st
 
 import re
 import pytz
@@ -41,7 +41,7 @@ import load_data
 import sk_classifier_builder as skb
 import sk_classifier_metrics as skm
 
-st.title('Streamlit Demo')
+#st.title('Streamlit Demo')
 
 p = Path('.')
 
@@ -73,9 +73,20 @@ X_train, X_test, y_train, y_test = train_test_split(x, y, test_size=0.20, random
 
 decision_tree = skb.pipeBuild_DecisionTreeClassifier(criterion=['gini','entropy'],max_depth=[5, 10])
 random_forest = skb.pipeBuild_RandomForestClassifier(criterion=['gini','entropy'],n_estimators=[10], max_depth=[3, 5, 10],max_features=[1])
+knn = skb.pipeBuild_KNeighborsClassifier(n_neighbors=[3,5],weights=['uniform'],algorithm=['auto'],leaf_size=[20,30])
+gauss = skb.pipeBuild_GaussianProcessClassifier(max_iter_predict=[100],multi_class=['one_vs_rest'])
+ada = skb.pipeBuild_AdaBoostClassifier(estimator=[DecisionTreeClassifier()],n_estimators=[50],learning_rate=[1.0])
+gnb = skb.pipeBuild_GaussianNB(priors=[None],var_smoothing=[1.0e-9])
+qda = skb.pipeBuild_QuadraticDiscriminantAnalysis(priors=[None],reg_param=[0.0],store_covariance=[False],tol=[1.0e-4])
+svc = skb.pipeBuild_SVC(C=[1.0],kernel=['rbf'],degree=[3],gamma=['scale'],tol=[1.0e-3],random_state=None)
+mlp = skb.pipeBuild_MLPClassifier(hidden_layer_sizes=[(100,)],activation=['relu'],solver=['adam'],alpha=[0.0001],batch_size=['auto'],learning_rate=['constant'],random_state=None)
+nusvc = skb.pipeBuild_NuSVC(nu=[0.5],kernel=['rbf'],degree=[3],gamma=['scale'],tol=[1.0e-3],random_state=None)
 
-names = ['Decision Tree','Random Forest']
-pipes = [decision_tree,random_forest]
+names = ['Decision Tree','Random Forest','KNN','Gaussian','AdaBoost','GaussianNB','QDA','SVC','MLP','NuSVC']
+pipes = [decision_tree,random_forest,knn,gauss,ada,gnb,qda,svc,mlp,nusvc]
+
+#names=['NuSVC']
+#pipes=[nusvc]
 
 titles = []
 for t in names:
@@ -92,13 +103,14 @@ samples = np.arange(len(X_train[0,:]))
 #print("samples: ",samples)
 
 # Plot Training Set
-fig1 = px.scatter(x = samples,y = X_train[0,:],title="Sample Data Entry")
-st.plotly_chart(fig1)
+#fig1 = px.scatter(x = samples,y = X_train[0,:],title="Sample Data Entry")
+#st.plotly_chart(fig1)
+#fig1.show()
 
 # Plot Testing Set
 #fig1.append_trace(go.Scatter(x = X_test[:, 0],y = X_test[:, 1],),row=i,col=1)
 
-fig2, ax = plt.subplots(1,len(names))
+#fig2, ax = plt.subplots(1,len(names))
 
 # iterate over classifiers
 for j in range(len(names)):
@@ -122,7 +134,7 @@ for j in range(len(names)):
     #RocCurveDisplay(fpr=fpr, tpr=tpr, roc_auc=roc_auc,estimator_name=grid_search)
 
 plt.tight_layout()
-st.pyplot(plt)
-#plt.show()
-#fig1.show()
+#st.pyplot(plt)
+plt.show()
+#fig2.show()
 #"""
