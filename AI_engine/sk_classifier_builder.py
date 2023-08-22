@@ -16,7 +16,7 @@ from sklearn.pipeline import Pipeline
 from sklearn.datasets import make_moons, make_circles, make_classification
 from sklearn.neural_network import MLPClassifier
 from sklearn.linear_model import PassiveAggressiveClassifier, SGDClassifier
-from sklearn.neighbors import KNeighborsClassifier, NearestCentroid
+from sklearn.neighbors import KNeighborsClassifier, NearestCentroid, RadiusNeighborsClassifier, BallTree, KDTree
 from sklearn.svm import SVC
 from sklearn.svm import NuSVC
 from sklearn.gaussian_process import GaussianProcessClassifier
@@ -248,6 +248,22 @@ def pipeBuild_ExtraTreesClassifier(n_estimators=[100],criterion=['gini'],max_dep
   }]
   return pipeline, params
 
+# RADIUS NEAREST NEIGHBORS
+def pipeBuild_RadiusNeighborsClassifier(radius=[1.0],weights=['uniform'],algorithm=['auto'],leaf_size=[30],p=[2],metric=['minkowski']):
+  classifier = RadiusNeighborsClassifier()
+  pipeline = Pipeline(steps=[('radiusNN', classifier)])
+  
+  params = [{
+      'radiusNN__radius': radius,
+      'radiusNN__weights': weights,
+      'radiusNN__algorithm': algorithm,
+      'radiusNN__leaf_size': leaf_size,
+      'radiusNN__p': p,
+      'radiusNN__metric': metric,
+  }]
+  return pipeline, params
+
+
 # GRADIENT TREE BOOSTING
 def pipeBuild_GradientBoostingClassifier(loss=['log_loss'],learning_rate=[0.1],n_estimators=[100],subsample=[1.0],criterion=['friedman_mse'],min_samples_split=[2],min_samples_leaf=[1],max_depth=[3],random_state=None):
   classifier = GradientBoostingClassifier(random_state=random_state)
@@ -298,6 +314,28 @@ def pipeBuild_BernoulliNB(alpha=[1.0],force_alpha=[True],binarize=[0.0],fit_prio
 
 
 """
+# KD TREE
+def pipeBuild_KDTree(X,leaf_size=[40],metric=['minkowski']):
+  classifier = KDTree(X)
+  pipeline = Pipeline(steps=[('kdt', classifier)])
+  
+  params = [{
+      'kdt__leaf_size': leaf_size,
+      'kdt__metric': metric,
+  }]
+  return pipeline, params
+
+# BALL TREE
+def pipeBuild_BallTree(X,leaf_size=[40],metric=['minkowski']):
+  classifier = BallTree(X)
+  pipeline = Pipeline(steps=[('ball', classifier)])
+  
+  params = [{
+      'ball__leaf_size': leaf_size,
+      'ball__metric': metric,
+  }]
+  return pipeline, params
+
 # COMPLEMENT NAIVE BAYES CLASSIFIER
 def pipeBuild_ComplementNB(alpha=[1.0],force_alpha=[True],fit_prior=[True],class_prior=[None],norm=[False]):
   classifier = ComplementNB()
