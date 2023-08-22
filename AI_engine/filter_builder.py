@@ -70,7 +70,7 @@ def butter_lowpass(cutoff, fs, order=5):
 
 def butter_lowpass_filter(data, cutoff, fs, order=5):
     b, a = butter_lowpass(cutoff, fs, order=order)
-    y = signal.lfilter(b, a, data)
+    y = signal.filtfilt(b, a, data)
     return y
 
 def cheby1_lowpass(cutoff, fs, max_rip=5, order=5):
@@ -166,7 +166,7 @@ def butter_bandstop(lowcut, highcut, fs, order):
 
 def butter_bandstop_filter(data, lowcut, highcut, fs, order=5):
     i, u = butter_bandstop(lowcut, highcut, fs, order=order)
-    y = signal.lfilter(i, u, data)
+    y = signal.filtfilt(i, u, data)
     return y
 
 def cheby1_bandstop(lowcut, highcut, fs, max_rip=5, order=5):
@@ -202,7 +202,7 @@ def bessel_bandstop(lowcut, highcut, fs, order):
 
 def bessel_bandstop_filter(data, lowcut, highcut, fs, order=5):
     i, u = bessel_bandstop(lowcut, highcut, fs, order=order)
-    y = signal.lfilter(i, u, data)
+    y = signal.filtfilt(i, u, data)
     return y
 
 #SMOOTHING FILTERS

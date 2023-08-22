@@ -1,3 +1,4 @@
+from math import radians
 import sys
 import os
 import numpy as np
@@ -90,17 +91,21 @@ nc = skb.pipeBuild_NearestCentroid()
 pac = skb.pipeBuild_PassiveAggressiveClassifier()
 lda = skb.pipeBuild_LinearDiscriminantAnalysis()
 sgc = skb.pipeBuild_SGDClassifier()
+rad = skb.pipeBuild_RadiusNeighborsClassifier(radius=[10])
 
+
+#kdt = skb.pipeBuild_KDTree(X=[(len(x[0]),y.max()+1)])
+#ball = skb.pipeBuild_BallTree(X=[(len(x[0]),y.max()+1)])
 #cnb = skb.pipeBuild_ComplementNB() # cannot handle negative values
 #mnb = skb.pipeBuild_MultinomialNB() # cannot handle negative values
 #stk = skb.pipeBuild_StackingClassifier() # Not Working
 #vt = skb.pipeBuild_VotingClassifier() # Not Working
 
-#names = ['Decision Tree','Random Forest','KNN','Gaussian','AdaBoost','GaussianNB','QDA','SVC','MLP','NuSVC','Bagging','Extra Trees','Gradient Boost','Hist Grad Boost','Bernoulli NB','N. Centroid','PassAgress','LDA','SGD']
-#pipes = [decision_tree,random_forest,knn,gauss,ada,gnb,qda,svc,mlp,nusvc,bag,ex,gb,hgb,bnb,nc,pac,lda,sgc]
+#names = ['Decision Tree','Random Forest','KNN','Gaussian','AdaBoost','GaussianNB','QDA','SVC','MLP','NuSVC','Bagging','Extra Trees','Gradient Boost','Hist Grad Boost','Bernoulli NB','N. Centroid','PassAgress','LDA','SGD','Radius NN']
+#pipes = [decision_tree,random_forest,knn,gauss,ada,gnb,qda,svc,mlp,nusvc,bag,ex,gb,hgb,bnb,nc,pac,lda,sgc,rad]
 
-names=['SGD']
-pipes=[sgc]
+names=['Radius NN']
+pipes=[rad]
 
 titles = []
 for t in names:
