@@ -81,12 +81,26 @@ qda = skb.pipeBuild_QuadraticDiscriminantAnalysis(priors=[None],reg_param=[0.0],
 svc = skb.pipeBuild_SVC(C=[1.0],kernel=['rbf'],degree=[3],gamma=['scale'],tol=[1.0e-3],random_state=None)
 mlp = skb.pipeBuild_MLPClassifier(hidden_layer_sizes=[(100,)],activation=['relu'],solver=['adam'],alpha=[0.0001],batch_size=['auto'],learning_rate=['constant'],random_state=None)
 nusvc = skb.pipeBuild_NuSVC(nu=[0.5],kernel=['rbf'],degree=[3],gamma=['scale'],tol=[1.0e-3],random_state=None)
+bag = skb.pipeBuild_BaggingClassifier()
+ex = skb.pipeBuild_ExtraTreesClassifier()
+gb = skb.pipeBuild_GradientBoostingClassifier()
+hgb = skb.pipeBuild_HistGradientBoostingClassifier()
+bnb = skb.pipeBuild_BernoulliNB()
+nc = skb.pipeBuild_NearestCentroid()
+pac = skb.pipeBuild_PassiveAggressiveClassifier()
+lda = skb.pipeBuild_LinearDiscriminantAnalysis()
+sgc = skb.pipeBuild_SGDClassifier()
 
-names = ['Decision Tree','Random Forest','KNN','Gaussian','AdaBoost','GaussianNB','QDA','SVC','MLP','NuSVC']
-pipes = [decision_tree,random_forest,knn,gauss,ada,gnb,qda,svc,mlp,nusvc]
+#cnb = skb.pipeBuild_ComplementNB() # cannot handle negative values
+#mnb = skb.pipeBuild_MultinomialNB() # cannot handle negative values
+#stk = skb.pipeBuild_StackingClassifier() # Not Working
+#vt = skb.pipeBuild_VotingClassifier() # Not Working
 
-#names=['NuSVC']
-#pipes=[nusvc]
+#names = ['Decision Tree','Random Forest','KNN','Gaussian','AdaBoost','GaussianNB','QDA','SVC','MLP','NuSVC','Bagging','Extra Trees','Gradient Boost','Hist Grad Boost','Bernoulli NB','N. Centroid','PassAgress','LDA','SGD']
+#pipes = [decision_tree,random_forest,knn,gauss,ada,gnb,qda,svc,mlp,nusvc,bag,ex,gb,hgb,bnb,nc,pac,lda,sgc]
+
+names=['SGD']
+pipes=[sgc]
 
 titles = []
 for t in names:

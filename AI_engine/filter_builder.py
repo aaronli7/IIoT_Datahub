@@ -49,6 +49,17 @@ def cheby2_highpass_filter(data, min_attenuation, cutoff, fs, order=5):
     y = signal.filtfilt(b, a, data)
     return y
 
+def bessel_highpass(cutoff, fs, order=5):
+    nyq = 0.5 * fs
+    normal_cutoff = cutoff / nyq
+    b, a = signal.bessel(N = order, Wn = normal_cutoff, btype='high', analog=False)
+    return b, a
+
+def bessel_highpass_filter(data, cutoff, fs, order=5):
+    b, a = bessel_highpass(cutoff=cutoff, fs=fs, order=order)
+    y = signal.filtfilt(b, a, data)
+    return y
+
 # Lowpass filters
 
 def butter_lowpass(cutoff, fs, order=5):
@@ -84,6 +95,19 @@ def cheby2_lowpass_filter(data, min_attenuation, cutoff, fs, order=5):
     y = signal.filtfilt(b, a, data)
     return y
 
+def bessel_lowpass(cutoff, fs, order=5):
+    nyq = 0.5 * fs
+    normal_cutoff = cutoff / nyq
+    b, a = signal.bessel(order, normal_cutoff, btype='low', analog=False)
+    return b, a
+
+def bessel_lowpass_filter(data, cutoff, fs, order=5):
+    b, a = bessel_lowpass(cutoff, fs, order=order)
+    y = signal.filtfilt(b, a, data)
+    return y
+
+# Bandpass filters
+
 def butter_bandpass(lowcut, highcut, fs, order):
     nyq = 0.5 * fs
     low = lowcut / nyq
@@ -93,7 +117,7 @@ def butter_bandpass(lowcut, highcut, fs, order):
 
 def butter_bandpass_filter(data, lowcut, highcut, fs, order=5):
     b, a = butter_bandpass(lowcut, highcut, fs, order=order)
-    y = signal.lfilter(b, a, data)
+    y = signal.filtfilt(b, a, data)
     return y
 
 def cheby1_bandpass(lowcut, highcut, fs, max_rip=5, order=5):
@@ -117,6 +141,18 @@ def cheby2_bandpass(lowcut, highcut, fs, min_attn=5, order=5):
 
 def cheby2_bandpass_filter(data, min_attenuation, lowcut, highcut, fs, order=5):
     b, a = cheby2_bandpass(lowcut=lowcut, highcut=highcut, min_attn = min_attenuation, fs=fs, order=order)
+    y = signal.filtfilt(b, a, data)
+    return y
+
+def bessel_bandpass(lowcut, highcut, fs, order):
+    nyq = 0.5 * fs
+    low = lowcut / nyq
+    high = highcut / nyq
+    b, a = signal.bessel(order, [low, high], btype='band')
+    return b, a
+
+def bessel_bandpass_filter(data, lowcut, highcut, fs, order=5):
+    b, a = bessel_bandpass(lowcut, highcut, fs, order=order)
     y = signal.filtfilt(b, a, data)
     return y
 
@@ -157,3 +193,35 @@ def cheby2_bandstop_filter(data, min_attenuation, lowcut, highcut, fs, order=5):
     y = signal.filtfilt(b, a, data)
     return y
 
+def bessel_bandstop(lowcut, highcut, fs, order):
+    nyq = 0.5 * fs
+    low = lowcut / nyq
+    high = highcut / nyq
+    i, u = signal.bessel(order, [low, high], btype='bandstop')
+    return i, u
+
+def bessel_bandstop_filter(data, lowcut, highcut, fs, order=5):
+    i, u = bessel_bandstop(lowcut, highcut, fs, order=order)
+    y = signal.lfilter(i, u, data)
+    return y
+
+#SMOOTHING FILTERS
+
+# Wiener Filter
+    # Note: "size" should be odd
+def wiener_filter(data, size, n=None):
+    if (size % 2) == 0:
+        num = num + 1
+        print("size is even, adding 1 to make it odd")
+    wi = signal.wiener(data, mysize=size, noise=n)
+    return wi
+
+# Gaussian Spline
+def gaussian_spline(data, order):
+    gs = signal.gauss_spline(x=data,n=order)
+    return gs
+
+# Spline
+#def spline(data,lam=5.0):
+    #sf = signal.spline_filter(Iin=data,lmbda=lam)
+    #return sf

@@ -15,15 +15,16 @@ from sklearn.pipeline import make_pipeline
 from sklearn.pipeline import Pipeline
 from sklearn.datasets import make_moons, make_circles, make_classification
 from sklearn.neural_network import MLPClassifier
-from sklearn.neighbors import KNeighborsClassifier
+from sklearn.linear_model import PassiveAggressiveClassifier, SGDClassifier
+from sklearn.neighbors import KNeighborsClassifier, NearestCentroid
 from sklearn.svm import SVC
 from sklearn.svm import NuSVC
 from sklearn.gaussian_process import GaussianProcessClassifier
 from sklearn.gaussian_process.kernels import RBF
 from sklearn.tree import DecisionTreeClassifier
-from sklearn.ensemble import RandomForestClassifier, AdaBoostClassifier
-from sklearn.naive_bayes import GaussianNB
-from sklearn.discriminant_analysis import QuadraticDiscriminantAnalysis
+from sklearn.ensemble import RandomForestClassifier, AdaBoostClassifier, BaggingClassifier, ExtraTreesClassifier, GradientBoostingClassifier, HistGradientBoostingClassifier, StackingClassifier, VotingClassifier
+from sklearn.naive_bayes import GaussianNB, MultinomialNB, BernoulliNB, ComplementNB
+from sklearn.discriminant_analysis import QuadraticDiscriminantAnalysis, LinearDiscriminantAnalysis
 from sklearn.neural_network import BernoulliRBM
 from sklearn.inspection import DecisionBoundaryDisplay
 from sklearn.model_selection import GridSearchCV
@@ -65,6 +66,17 @@ def pipeBuild_KNeighborsClassifier(n_neighbors=[100],weights=['uniform'],algorit
       'knn__weights': weights,
       'knn__algorithm': algorithm,
       'knn__leaf_size': leaf_size,
+  }]
+  return pipeline, params
+
+# NEAREST CENTROID CLASSIFIER
+def pipeBuild_NearestCentroid(metric=['euclidean'],shrink_threshold=[None]):
+  classifier = NearestCentroid()
+  pipeline = Pipeline(steps=[('nc', classifier)])
+  
+  params = [{
+      'nc__metric': metric,
+      'nc__shrink_threshold': shrink_threshold,
   }]
   return pipeline, params
 
@@ -115,6 +127,40 @@ def pipeBuild_QuadraticDiscriminantAnalysis(priors=[None],reg_param=[0.0],store_
   }]
   return pipeline, params
 
+# LINEAR DISCRIMINANT ANALYSIS
+def pipeBuild_LinearDiscriminantAnalysis(solver=['svd'],shrinkage=[None],priors=[None],n_components=[None],store_covariance=[False],tol=[1.0e-4],covariance_estimator=[None]):
+  classifier = LinearDiscriminantAnalysis()
+  pipeline = Pipeline(steps=[('lda', classifier)])
+  
+  params = [{
+      'lda__solver': solver,
+      'lda__shrinkage': shrinkage,
+      'lda__priors': priors, # Array of Arrays if not default
+      'lda__n_components': n_components,
+      'lda__store_covariance': store_covariance,
+      'lda__tol': tol,
+      'lda__covariance_estimator': covariance_estimator,
+  }]
+  return pipeline, params
+
+# STOCHASTIC GRADIENT DESCENT
+def pipeBuild_SGDClassifier(loss=['hinge'],penalty=['l2'],alpha=[0.0001],l1_ratio=[0.15],fit_intercept=[True],max_iter=[1000],tol=[1.0e-3],epsilon=[0.1],random_state=None,learning_rate=['optimal']):
+  classifier = SGDClassifier(random_state=random_state)
+  pipeline = Pipeline(steps=[('sgd', classifier)])
+  
+  params = [{
+      'sgd__loss': loss,
+      'sgd__penalty': penalty,
+      'sgd__alpha': alpha,
+      'sgd__l1_ratio': l1_ratio,
+      'sgd__fit_intercept': fit_intercept,
+      'sgd__max_iter': max_iter,
+      'sgd__tol': tol,
+      'sgd__epsilon': epsilon,
+      'sgd__learning_rate': learning_rate,
+  }]
+  return pipeline, params
+
 # SUPPORT VECTOR CLASSIFIER
 def pipeBuild_SVC(C=[1.0],kernel=['rbf'],degree=[3],gamma=['scale'],tol=[1.0e-3],random_state=None):
   classifier = SVC(random_state=random_state)
@@ -126,6 +172,22 @@ def pipeBuild_SVC(C=[1.0],kernel=['rbf'],degree=[3],gamma=['scale'],tol=[1.0e-3]
       'svc__degree': degree,
       'svc__gamma': gamma,
       'svc__tol': tol,
+  }]
+  return pipeline, params
+
+# PASSIVE AGGRESSIVE CLASSIFIER
+def pipeBuild_PassiveAggressiveClassifier(C=[1.0],fit_intercept=[True],max_iter=[1000],tol=[1.0e-3],early_stopping=[False],n_iter_no_change=[5],loss=['hinge'],random_state=None):
+  classifier = PassiveAggressiveClassifier(random_state=random_state)
+  pipeline = Pipeline(steps=[('pac', classifier)])
+  
+  params = [{
+      'pac__C': C,
+      'pac__fit_intercept': fit_intercept,
+      'pac__max_iter': max_iter,
+      'pac__tol': tol,
+      'pac__early_stopping': early_stopping,
+      'pac__n_iter_no_change': n_iter_no_change,
+      'pac__loss': loss,
   }]
   return pipeline, params
 
@@ -157,3 +219,122 @@ def pipeBuild_NuSVC(nu=[0.5],kernel=['rbf'],degree=[3],gamma=['scale'],tol=[1.0e
       'nusvc__tol': tol,
   }]
   return pipeline, params
+
+# BAGGING CLASSIFIER
+def pipeBuild_BaggingClassifier(estimator=[DecisionTreeClassifier()],n_estimators=[10],max_samples=[1.0],max_features=[1.0],random_state=None):
+  classifier = BaggingClassifier(random_state=random_state)
+  pipeline = Pipeline(steps=[('bag', classifier)])
+  
+  params = [{
+      'bag__estimator': estimator,
+      'bag__n_estimators': n_estimators,
+      'bag__max_samples': max_samples,
+      'bag__max_features': max_features,
+  }]
+  return pipeline, params
+
+# EXTRA TREES CLASSIFIER
+def pipeBuild_ExtraTreesClassifier(n_estimators=[100],criterion=['gini'],max_depth=[None],min_samples_split=[2],min_samples_leaf=[1],max_features=['sqrt'],random_state=None):
+  classifier = ExtraTreesClassifier(random_state=random_state)
+  pipeline = Pipeline(steps=[('extra', classifier)])
+  
+  params = [{
+      'extra__n_estimators': n_estimators,
+      'extra__criterion': criterion,
+      'extra__max_depth': max_depth,
+      'extra__min_samples_split': min_samples_split,
+      'extra__min_samples_leaf': min_samples_leaf,
+      'extra__max_features': max_features,
+  }]
+  return pipeline, params
+
+# GRADIENT TREE BOOSTING
+def pipeBuild_GradientBoostingClassifier(loss=['log_loss'],learning_rate=[0.1],n_estimators=[100],subsample=[1.0],criterion=['friedman_mse'],min_samples_split=[2],min_samples_leaf=[1],max_depth=[3],random_state=None):
+  classifier = GradientBoostingClassifier(random_state=random_state)
+  pipeline = Pipeline(steps=[('gb', classifier)])
+  
+  params = [{
+      'gb__loss': loss,
+      'gb__learning_rate': learning_rate,
+      'gb__n_estimators': n_estimators,
+      'gb__subsample': subsample,
+      'gb__criterion': criterion,      
+      'gb__min_samples_split': min_samples_split,
+      'gb__min_samples_leaf': min_samples_leaf,
+      'gb__max_depth': max_depth,    
+  }]
+  return pipeline, params
+
+# HISTOGRAM GRADIENT BOOSTING
+def pipeBuild_HistGradientBoostingClassifier(loss=['log_loss'],learning_rate=[0.1],max_iter=[100],max_leaf_nodes=[31],max_depth=[3],min_samples_leaf=[20],l2_regularization=[0],max_bins=[255],random_state=None):
+  classifier = HistGradientBoostingClassifier(random_state=random_state)
+  pipeline = Pipeline(steps=[('hgb', classifier)])
+  
+  params = [{
+      'hgb__loss': loss,
+      'hgb__learning_rate': learning_rate,
+      'hgb__max_iter': max_iter,
+      'hgb__max_leaf_nodes': max_leaf_nodes, 
+      'hgb__max_depth': max_depth,
+      'hgb__min_samples_leaf': min_samples_leaf,
+      'hgb__l2_regularization': l2_regularization,
+      'hgb__max_bins': max_bins,    
+  }]
+  return pipeline, params
+
+# BOURNOULLI NAIVE BAYES CLASSIFIER
+def pipeBuild_BernoulliNB(alpha=[1.0],force_alpha=[True],binarize=[0.0],fit_prior=[True],class_prior=[None]):
+  classifier = BernoulliNB()
+  pipeline = Pipeline(steps=[('mnb', classifier)])
+  
+  params = [{
+      'mnb__alpha': alpha,
+      'mnb__binarize': binarize,
+      'mnb__fit_prior': fit_prior,
+      'mnb__fit_prior': fit_prior,
+      'mnb__class_prior': class_prior,
+  }]
+  return pipeline, params
+
+
+"""
+# COMPLEMENT NAIVE BAYES CLASSIFIER
+def pipeBuild_ComplementNB(alpha=[1.0],force_alpha=[True],fit_prior=[True],class_prior=[None],norm=[False]):
+  classifier = ComplementNB()
+  pipeline = Pipeline(steps=[('cnb', classifier)])
+  
+  params = [{
+      'cnb__alpha': alpha,
+      'cnb__force_alpha': force_alpha,
+      'cnb__fit_prior': fit_prior,
+      'cnb__class_prior': class_prior,
+      'cnb__norm': norm,
+  }]
+  return pipeline, params
+
+# STACKING CLASSIFIER - Not Working, same issue as Voting Classifier
+def pipeBuild_StackingClassifier(estimators=[('dt_def', DecisionTreeClassifier()),('knn_def', KNeighborsClassifier()),],final_estimator=[None],cv=[None],stack_method=['auto']):
+  classifier = StackingClassifier(estimators=estimators)
+  pipeline = Pipeline(steps=[('stack', classifier)])
+  
+  params = [{
+      'stack__estimators': estimators,
+      'stack__final_estimator': final_estimator,
+      'stack__cv': cv,
+      'stack__stack_method': stack_method,
+  }]
+  return pipeline, params
+
+# VOTING CLASSIFIER - NOT WORKING
+
+def pipeBuild_VotingClassifier(estimators=[[DecisionTreeClassifier()],[KNeighborsClassifier()]],voting=['hard'],weights=[None]):
+  classifier = VotingClassifier(estimators=estimators)
+  pipeline = Pipeline(steps=[('vote', classifier)])
+  
+  params = [{
+      'vote__estimators': estimators,
+      'vote__voting': voting,
+      'vote__weights': weights,
+  }]
+  return pipeline, params
+#"""

@@ -84,12 +84,21 @@ def filter_plot(filter_name,sig,t,fs,lowcut,highcut,orders=[5],max_rip=5,min_att
       b, a = fltr.cheby1_bandstop(max_rip=max_rip, lowcut=lowcut, highcut=highcut, fs=fs, order=order)
     elif filter_name == 'cheby2_bs':
       b, a = fltr.cheby2_bandstop(min_attn=min_attn, lowcut=lowcut, highcut=highcut, fs=fs, order=order)
+    elif filter_name == 'bessel_bp':
+      b, a = fltr.bessel_bandpass(lowcut, highcut, fs, order=order)
+    elif filter_name == 'bessel_hp':
+      b, a = fltr.bessel_highpass(lowcut, fs, order=order)
+    elif filter_name == 'bessel_lp':
+      b, a = fltr.bessel_lowpass(highcut, fs, order=order)
+    elif filter_name == 'bessel_bs':
+      b, a = fltr.bessel_bandstop(lowcut, highcut, fs, order=order)
     else:
       b, a = fltr.butter_bandpass(lowcut, highcut, fs, order=order)
     w, h = freqz(b, a, worN=2000)
     plt.plot((fs * 0.5 / np.pi) * w, abs(h), label="order = %d" % order)
 
   plt.plot([0, 0.5 * fs], [np.sqrt(0.5), np.sqrt(0.5)],'--', label='sqrt(0.5)')
+  plt.title(filter_name + " frequency response")
   plt.xlabel('Frequency (Hz)')
   plt.ylabel('Gain')
   plt.grid(True)
@@ -153,7 +162,25 @@ def filter_plot(filter_name,sig,t,fs,lowcut,highcut,orders=[5],max_rip=5,min_att
     f0 = int(highcut)
     label='Signals below (%g Hz)' % f0
     y = fltr.cheby2_lowpass_filter(x, min_attn, highcut, fs, order=orders[-1])
+  # Bessel filters
+  if filter_name == 'bessel_bp':
+    f0 = int((highcut-lowcut)/2+lowcut)
+    label='Filtered signal (%g Hz)' % f0
+    y = fltr.bessel_bandpass_filter(x, lowcut, highcut, fs, order=orders[-1])
+  elif filter_name == 'bessel_bs':
+    f0 = int((highcut-lowcut)/2+lowcut)
+    label='Blocked signal (%g Hz)' % f0
+    y = fltr.bessel_bandstop_filter(x, lowcut, highcut, fs, order=orders[-1])
+  elif filter_name == 'bessel_hp':
+    f0 = int(lowcut)
+    label='Signals above (%g Hz)' % f0
+    y = fltr.bessel_highpass_filter(x, lowcut, fs, order=orders[-1])
+  elif filter_name == 'bessel_lp':
+    f0 = int(highcut)
+    label='Signals below (%g Hz)' % f0
+    y = fltr.bessel_lowpass_filter(x, highcut, fs, order=orders[-1])
   plt.plot(t, y, label=label)
+  plt.title(filter_name + " filtered signal")
   plt.xlabel('time (seconds)')
   plt.grid(True)
   plt.axis('tight')
@@ -183,6 +210,9 @@ filter_plot('cheby1_hp',sig,t,fs,lowcut,highcut,orders)
 # High Pass (cheby2)
 filter_plot('cheby2_hp',sig,t,fs,lowcut,highcut,orders)
 
+#High Pass (bessel)
+filter_plot('bessel_hp',sig,t,fs,lowcut,highcut,orders)
+
 #Low Pass (butter)
 filter_plot('butter_lp',sig,t,fs,lowcut,highcut,orders)
 
@@ -191,6 +221,9 @@ filter_plot('cheby1_lp',sig,t,fs,lowcut,highcut,orders)
 
 # Low Pass (cheby2)
 filter_plot('cheby2_lp',sig,t,fs,lowcut,highcut,orders)
+
+#Low Pass (bessel)
+filter_plot('bessel_lp',sig,t,fs,lowcut,highcut,orders)
 
 #Band Pass (butter)
 filter_plot('butter_bp',sig,t,fs,lowcut,highcut,orders)
@@ -201,6 +234,9 @@ filter_plot('cheby1_bp',sig,t,fs,lowcut,highcut,orders)
 # Band Pass (cheby2)
 filter_plot('cheby2_bp',sig,t,fs,lowcut,highcut,orders)
 
+#Band Pass (bessel)
+filter_plot('bessel_bp',sig,t,fs,lowcut,highcut,orders)
+
 #Band Stop (butter)
 filter_plot('butter_bs',sig,t,fs,lowcut,highcut,orders)
 
@@ -209,6 +245,9 @@ filter_plot('cheby1_bs',sig,t,fs,lowcut,highcut,orders)
 
 # Band Stop (cheby2)
 filter_plot('cheby2_bs',sig,t,fs,lowcut,highcut,orders)
+
+#Band Stop (bessel)
+filter_plot('bessel_bs',sig,t,fs,lowcut,highcut,orders)
 
 """
 data = np.load("C:/Users/steph/OneDrive/Documents/GitHub/IIoT_Datahub/AI_engine/test_data/synthetic_dataset.npy")
