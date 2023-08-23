@@ -179,6 +179,27 @@ def filter_plot(filter_name,sig,t,fs,lowcut,highcut,orders=[5],max_rip=5,min_att
     f0 = int(highcut)
     label='Signals below (%g Hz)' % f0
     y = fltr.bessel_lowpass_filter(x, highcut, fs, order=orders[-1])
+  # Elliptic filters
+  elif filter_name == 'ellip_bp':
+    f0 = int((highcut-lowcut)/2+lowcut)
+    label='Filtered signal (%g Hz)' % f0
+    y = fltr.ellip_bandpass_filter(x, max_rip, min_attn, lowcut, highcut, fs, order=orders[-1])
+  elif filter_name == 'ellip_bs':
+    f0 = int((highcut-lowcut)/2+lowcut)
+    label='Blocked signal (%g Hz)' % f0
+    y = fltr.ellip_bandstop_filter(x, max_rip, min_attn, lowcut, highcut, fs, order=orders[-1])
+  elif filter_name == 'ellip_hp':
+    f0 = int(lowcut)
+    label='Signals above (%g Hz)' % f0
+    y = fltr.ellip_highpass_filter(x, max_rip, min_attn, lowcut, fs, order=orders[-1])
+  elif filter_name == 'ellip_lp':
+    f0 = int(highcut)
+    label='Signals below (%g Hz)' % f0
+    y = fltr.ellip_lowpass_filter(x, max_rip, min_attn, highcut, fs, order=orders[-1])
+  else:
+    f0 = int((highcut-lowcut)/2+lowcut)
+    label='Filtered signal (%g Hz)' % f0
+    y = fltr.butter_bandpass_filter(x, lowcut, highcut, fs, order=orders[-1])
   plt.plot(t, y, label=label)
   plt.title(filter_name + " filtered signal")
   plt.xlabel('time (seconds)')
@@ -213,6 +234,9 @@ filter_plot('cheby2_hp',sig,t,fs,lowcut,highcut,orders)
 #High Pass (bessel)
 filter_plot('bessel_hp',sig,t,fs,lowcut,highcut,orders)
 
+#High Pass (elliptic)
+filter_plot('ellip_hp',sig,t,fs,lowcut,highcut,orders)
+
 #Low Pass (butter)
 filter_plot('butter_lp',sig,t,fs,lowcut,highcut,orders)
 
@@ -224,6 +248,9 @@ filter_plot('cheby2_lp',sig,t,fs,lowcut,highcut,orders)
 
 #Low Pass (bessel)
 filter_plot('bessel_lp',sig,t,fs,lowcut,highcut,orders)
+
+#Low Pass (elliptic)
+filter_plot('ellip_lp',sig,t,fs,lowcut,highcut,orders)
 
 #Band Pass (butter)
 filter_plot('butter_bp',sig,t,fs,lowcut,highcut,orders)
@@ -237,6 +264,9 @@ filter_plot('cheby2_bp',sig,t,fs,lowcut,highcut,orders)
 #Band Pass (bessel)
 filter_plot('bessel_bp',sig,t,fs,lowcut,highcut,orders)
 
+#Band Pass (elliptic)
+filter_plot('ellip_bp',sig,t,fs,lowcut,highcut,orders)
+
 #Band Stop (butter)
 filter_plot('butter_bs',sig,t,fs,lowcut,highcut,orders)
 
@@ -248,6 +278,9 @@ filter_plot('cheby2_bs',sig,t,fs,lowcut,highcut,orders)
 
 #Band Stop (bessel)
 filter_plot('bessel_bs',sig,t,fs,lowcut,highcut,orders)
+
+#Band Stop (elliptic)
+filter_plot('ellip_bs',sig,t,fs,lowcut,highcut,orders)
 
 """
 data = np.load("C:/Users/steph/OneDrive/Documents/GitHub/IIoT_Datahub/AI_engine/test_data/synthetic_dataset.npy")

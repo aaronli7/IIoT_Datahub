@@ -60,6 +60,17 @@ def bessel_highpass_filter(data, cutoff, fs, order=5):
     y = signal.filtfilt(b, a, data)
     return y
 
+def ellip_highpass(cutoff, fs, max_rip=5, min_attn=5, order=5):
+    nyq = 0.5 * fs
+    normal_cutoff = cutoff / nyq
+    b, a = signal.ellip(N = order, rp = max_rip, rs = min_attn, Wn = normal_cutoff, btype='high', analog=False)
+    return b, a
+
+def ellip_highpass_filter(data, max_ripple, min_attenuation, cutoff, fs, order=5):
+    b, a = ellip_highpass(cutoff=cutoff, max_rip = max_ripple, min_attn = min_attenuation, fs=fs, order=order)
+    y = signal.filtfilt(b, a, data)
+    return y
+
 # Lowpass filters
 
 def butter_lowpass(cutoff, fs, order=5):
@@ -103,6 +114,17 @@ def bessel_lowpass(cutoff, fs, order=5):
 
 def bessel_lowpass_filter(data, cutoff, fs, order=5):
     b, a = bessel_lowpass(cutoff, fs, order=order)
+    y = signal.filtfilt(b, a, data)
+    return y
+
+def ellip_lowpass(cutoff, fs, max_rip=5, min_attn=5, order=5):
+    nyq = 0.5 * fs
+    normal_cutoff = cutoff / nyq
+    b, a = signal.ellip(N = order, rp = max_rip, rs = min_attn, Wn = normal_cutoff, btype='low', analog=False)
+    return b, a
+
+def ellip_lowpass_filter(data, max_ripple, min_attenuation, cutoff, fs, order=5):
+    b, a = ellip_lowpass(cutoff=cutoff, max_rip = max_ripple, min_attn = min_attenuation, fs=fs, order=order)
     y = signal.filtfilt(b, a, data)
     return y
 
@@ -156,6 +178,18 @@ def bessel_bandpass_filter(data, lowcut, highcut, fs, order=5):
     y = signal.filtfilt(b, a, data)
     return y
 
+def ellip_bandpass(lowcut, highcut, fs, max_rip=5, min_attn=5, order=5):
+    nyq = 0.5 * fs
+    low = lowcut / nyq
+    high = highcut / nyq
+    b, a = signal.ellip(N = order, rp = max_rip, rs = min_attn, Wn = [low, high], btype='band', analog=False)
+    return b, a
+
+def ellip_bandpass_filter(data, max_ripple, min_attenuation, lowcut, highcut, fs, order=5):
+    b, a = ellip_bandpass(lowcut = lowcut, highcut = highcut, max_rip = max_ripple, min_attn = min_attenuation, fs=fs, order=order)
+    y = signal.filtfilt(b, a, data)
+    return y
+
 # Bandstop filters
 def butter_bandstop(lowcut, highcut, fs, order):
     nyq = 0.5 * fs
@@ -203,6 +237,18 @@ def bessel_bandstop(lowcut, highcut, fs, order):
 def bessel_bandstop_filter(data, lowcut, highcut, fs, order=5):
     i, u = bessel_bandstop(lowcut, highcut, fs, order=order)
     y = signal.filtfilt(i, u, data)
+    return y
+
+def ellip_bandstop(lowcut, highcut, fs, max_rip=5, min_attn=5, order=5):
+    nyq = 0.5 * fs
+    low = lowcut / nyq
+    high = highcut / nyq
+    b, a = signal.ellip(N = order, rp = max_rip, rs = min_attn, Wn = [low, high], btype='bandstop', analog=False)
+    return b, a
+
+def ellip_bandstop_filter(data, max_ripple, min_attenuation, lowcut, highcut, fs, order=5):
+    b, a = ellip_bandstop(lowcut = lowcut, highcut = highcut, max_rip = max_ripple, min_attn = min_attenuation, fs=fs, order=order)
+    y = signal.filtfilt(b, a, data)
     return y
 
 #SMOOTHING FILTERS
