@@ -28,25 +28,30 @@ from .util.linear_algebra import power_method, lanczos, eig_tridiag
 
 
 def start_SST(startdata,win_length,n_component,order,lag):
+    if order == None: # IF added by sjc
+        order = win_length
     Score_start=np.zeros(1) # get the initial score, Score_start
     x1 = np.empty(order, dtype=np.float64) 
     x1 = np.random.rand(order)
     x1 /= np.linalg.norm(x1)
-    score_start, x = SingularSpectrumTransformation(win_length=win_length, x0=x1, n_components=n_component,order=order, lag=lag,is_scaled=True).score_online(startdata)
+    print("!!!!!!!!!!!!!!!!!!! startdata shape is ",startdata.shape)
+    #score_start, x = SingularSpectrumTransformation(win_length=win_length, x0=x1, n_components=n_component,order=order, lag=lag,is_scaled=True).score_online(startdata)
+    score_start, x = SingularSpectrumTransformation(win_length=win_length, n_components=n_component,order=order, lag=lag,is_scaled=True).score_offline(startdata)
     Score_start=score_start+Score_start*10**7
     return Score_start,x
 
 
 #### After that we could use the output of start_SST function to initialize the infinite loop
 
-def stream_SST(stream,win_length,n_component,order,lag,x0):  #state_last,thres1,thres2
+def stream_SST(stream,win_length,n_component,order,lag):#,x0):  #state_last,thres1,thres2
   ### stream is the new data coming through
   ### last data is the data from the last second
   starttime=time.time()
   
   #data=np.concatenate((lastdata[lag:], stream), axis=None)
   data=stream
-  score, x1 = SingularSpectrumTransformation(win_length=win_length, x0=x0, n_components=n_component,order=order, lag=lag,is_scaled=True).score_online(data)
+  #score, x1 = SingularSpectrumTransformation(win_length=win_length, x0=x0, n_components=n_component,order=order, lag=lag,is_scaled=True).score_online(data)
+  score, x1 = SingularSpectrumTransformation(win_length=win_length, n_components=n_component,order=order, lag=lag,is_scaled=True).score_offline(data)
   score=score*10**5
 
   end=time.time()
@@ -92,7 +97,10 @@ class SingularSpectrumTransformation():
         """
         self.win_length = win_length
         self.n_components = n_components
-        self.order = order
+        if order == None:
+            self.order = win_length
+        else:
+            self.order = order
         self.lag = lag
         self.is_scaled = is_scaled
         self.use_lanczos = use_lanczos
@@ -125,7 +133,7 @@ class SingularSpectrumTransformation():
                 self.rank_lanczos = 2 * self.n_components
             else:
                 self.rank_lanczos = 2 * self.n_components - 1
-
+        print ("--------------------- x shape is ",x.shape)
         assert isinstance(x, np.ndarray), "input array must be numpy array."
         assert x.ndim == 1, "input array dimension must be 1."
         assert isinstance(self.win_length, int), "window length must be int."
@@ -133,7 +141,7 @@ class SingularSpectrumTransformation():
         assert isinstance(self.order, int), "order of partial time series must be int."
         assert isinstance(self.lag, int), "lag between test series and history series must be int."
         assert isinstance(self.rank_lanczos, int), "rank for lanczos must be int."
-        assert self.win_length + self.order + self.lag < x.size, "data length is too short."
+        #assert self.win_length + self.order + self.lag < x.size, "data length is too short."
 
         # all values should be positive for numerical stabilization
         if not self.is_scaled:
@@ -145,7 +153,7 @@ class SingularSpectrumTransformation():
         score = _score_offline(x_scaled, self.order,
             self.win_length, self.lag, self.n_components, self.rank_lanczos,
             self.eps, use_lanczos=self.use_lanczos)
-
+        print("&&&&&&&&&&&&&&&&&&&&&&&&&& score shape is ",score.shape)
         return score
 
 

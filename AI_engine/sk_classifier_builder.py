@@ -32,7 +32,7 @@ from sklearn.model_selection import GridSearchCV
 # All inputs execpt random_state should be lists of values, even if only one value
 
 # DECISION TREE CLASSIFIER
-def pipeBuild_DecisionTreeClassifier(criterion=['gini'],splitter=['best'], max_depth=[None],random_state=None,):
+def pipeBuild_DecisionTreeClassifier(criterion=['gini'],splitter=['best'], max_depth=[None],random_state=None):
   classifier = DecisionTreeClassifier(random_state=random_state)
   pipeline = Pipeline(steps=[('decision', classifier)])
   #pipeline = make_pipeline(classifier)
@@ -43,7 +43,7 @@ def pipeBuild_DecisionTreeClassifier(criterion=['gini'],splitter=['best'], max_d
     }]
   return pipeline, params
 
-# RANDOME FOREST CLASSIFIER
+# RANDOM FOREST CLASSIFIER
 def pipeBuild_RandomForestClassifier(n_estimators=[100],criterion=['gini'],max_depth=[None],max_features=['sqrt'],random_state=None):
   classifier = RandomForestClassifier(random_state=random_state)
   pipeline = Pipeline(steps=[('random', classifier)])

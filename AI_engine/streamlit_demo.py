@@ -42,6 +42,8 @@ import load_data
 import sk_classifier_builder as skb
 import sk_classifier_metrics as skm
 
+import sk_novelty_builder as skn
+
 #st.title('Streamlit Demo')
 
 p = Path('.')
@@ -93,6 +95,8 @@ lda = skb.pipeBuild_LinearDiscriminantAnalysis()
 sgc = skb.pipeBuild_SGDClassifier()
 rad = skb.pipeBuild_RadiusNeighborsClassifier(radius=[10])
 
+print("x[0] length is ",len(x[0]))
+sst = skn.pipeBuild_SstDetector(win_length = len(x[0]), threshold=[0.1,0.5,1.0,5.0,10.0,50.0],is_scaled = [True])
 
 #kdt = skb.pipeBuild_KDTree(X=[(len(x[0]),y.max()+1)])
 #ball = skb.pipeBuild_BallTree(X=[(len(x[0]),y.max()+1)])
@@ -104,8 +108,8 @@ rad = skb.pipeBuild_RadiusNeighborsClassifier(radius=[10])
 #names = ['Decision Tree','Random Forest','KNN','Gaussian','AdaBoost','GaussianNB','QDA','SVC','MLP','NuSVC','Bagging','Extra Trees','Gradient Boost','Hist Grad Boost','Bernoulli NB','N. Centroid','PassAgress','LDA','SGD','Radius NN']
 #pipes = [decision_tree,random_forest,knn,gauss,ada,gnb,qda,svc,mlp,nusvc,bag,ex,gb,hgb,bnb,nc,pac,lda,sgc,rad]
 
-names=['Radius NN']
-pipes=[rad]
+names=['SST']
+pipes=[sst]
 
 titles = []
 for t in names:
