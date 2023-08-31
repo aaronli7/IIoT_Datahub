@@ -47,7 +47,7 @@ def stream_SST(stream,win_length,n_component,order,lag):#,x0):  #state_last,thre
   ### stream is the new data coming through
   ### last data is the data from the last second
   starttime=time.time()
-  
+  print("$$$$$$$$$$$$$$$$$$$$$$$ I'm in stream_SST")
   #data=np.concatenate((lastdata[lag:], stream), axis=None)
   data=stream
   #score, x1 = SingularSpectrumTransformation(win_length=win_length, x0=x0, n_components=n_component,order=order, lag=lag,is_scaled=True).score_online(data)
@@ -167,7 +167,7 @@ def _score_offline(x, order, win_length, lag, n_components, rank, eps, use_lancz
     x0 = np.empty(order, dtype=np.float64)
     x0 = np.random.rand(order)
     x0 /= np.linalg.norm(x0)
-
+    print("*************** i get to _score_offline")
     score = np.zeros_like(x)
     for t in range(start_idx, end_idx):
         # compute score at each index
@@ -188,7 +188,7 @@ def _score_offline(x, order, win_length, lag, n_components, rank, eps, use_lancz
             x0 /= np.linalg.norm(x0)
         else:
             score[t-1] = _sst_svd(X_test, X_history, n_components)
-
+    print("*************** i get to return in _score_offline")
     return score
 
 

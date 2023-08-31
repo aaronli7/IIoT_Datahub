@@ -52,10 +52,11 @@ save_eval_path = p / "AI_engine/evaluation_results/"
 save_model_path = p / "AI_engine/saved_models/"
 datapath = p / "AI_engine/test_data/"
 
-data = np.load("C:/Users/steph/OneDrive/Documents/GitHub/IIoT_Datahub/AI_engine/test_data/synthetic_dataset.npy")
+#data = np.load("C:/Users/steph/OneDrive/Documents/GitHub/IIoT_Datahub/AI_engine/test_data/synthetic_dataset.npy")
 #data = np.load(datapath / "synthetic_dataset.npy")
+data = np.load("C:/Users/steph/OneDrive/Documents/GitHub/IIoT_Datahub/AI_engine/test_data/syn2class.npy")
 
-#print("shape of  data is ",data.shape)
+print("shape of  data is ",data.shape)
 
 x = data[:, :data.shape[1]-1]  # data
 y = data[:, -1] # label
