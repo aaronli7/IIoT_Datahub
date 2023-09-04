@@ -94,14 +94,17 @@ thielsen = skr.pipeBuild_TheilSenRegressor()
 elastic = skr.pipeBuild_ElasticNet(selection=['cyclic','random'])
 lars = skr.pipeBuild_Lars()
 lasso = skr.pipeBuild_Lasso(selection=['cyclic','random'])
-#names = ['SVR','NuSVR','LinearSVR','Ridge','RidgeCV','LinearRegression','SGD','Bayesian ADR',
-#   'Bayesian Ridge','Passive Aggressive','Gamma','Poisson','Tweedie','Huber','Quantile','RANSCAR',
-#   'ThielSen','ElasticNet','Lars','Lasso']
-#pipes = [svr,nusvr,lsvr,ridge,ridgecv,linreg,sgd,ard,bayridge,par,gamma,poiss,tweed,huber,quant,
-#   ranscar,thielsen,elastic,lars,lasso]
 
-names=['Lasso']
-pipes=[lasso]
+# Run All
+names = ['SVR','NuSVR','LinearSVR','Ridge','RidgeCV','LinearRegression','SGD','Bayesian ADR',
+   'Bayesian Ridge','Passive Aggressive','Gamma','Poisson','Tweedie','Huber','Quantile','RANSCAR',
+   'ThielSen','ElasticNet','Lars','Lasso']
+pipes = [svr,nusvr,lsvr,ridge,ridgecv,linreg,sgd,ard,bayridge,par,gamma,poiss,tweed,huber,quant,
+   ranscar,thielsen,elastic,lars,lasso]
+
+# Run Single
+#names=['Lasso']
+#pipes=[lasso]
 
 titles = []
 for t in names:
