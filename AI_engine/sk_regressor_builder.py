@@ -15,8 +15,6 @@ from sklearn.pipeline import make_pipeline
 from sklearn.pipeline import Pipeline
 from sklearn.datasets import make_moons, make_circles, make_classification
 from sklearn.gaussian_process.kernels import RBF
-from sklearn.inspection import DecisionBoundaryDisplay
-from sklearn.model_selection import GridSearchCV
 from sklearn.svm import SVR, NuSVR, LinearSVR
 from sklearn.linear_model import ARDRegression, BayesianRidge, ElasticNet, GammaRegressor, HuberRegressor, Lars, Lasso, LinearRegression, PassiveAggressiveRegressor, PoissonRegressor, QuantileRegressor, RANSACRegressor, Ridge, RidgeCV, SGDRegressor, TheilSenRegressor, TweedieRegressor
 

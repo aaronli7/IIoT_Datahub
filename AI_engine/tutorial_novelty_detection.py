@@ -19,18 +19,21 @@ from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
 from sklearn.pipeline import make_pipeline
 from sklearn.datasets import make_moons, make_circles, make_classification
+from sklearn.model_selection import GridSearchCV
+from sklearn.metrics import ConfusionMatrixDisplay, classification_report, RocCurveDisplay, auc, roc_curve, roc_auc_score
+
 from sklearn.neural_network import MLPClassifier
-from sklearn.neighbors import KNeighborsClassifier
+from sklearn.linear_model import PassiveAggressiveClassifier, SGDClassifier
+from sklearn.neighbors import KNeighborsClassifier, NearestCentroid, RadiusNeighborsClassifier, BallTree, KDTree
 from sklearn.svm import SVC
+from sklearn.svm import NuSVC
 from sklearn.gaussian_process import GaussianProcessClassifier
 from sklearn.gaussian_process.kernels import RBF
 from sklearn.tree import DecisionTreeClassifier
-from sklearn.ensemble import RandomForestClassifier, AdaBoostClassifier
-from sklearn.naive_bayes import GaussianNB
-from sklearn.discriminant_analysis import QuadraticDiscriminantAnalysis
-from sklearn.inspection import DecisionBoundaryDisplay
-from sklearn.model_selection import GridSearchCV
-from sklearn.metrics import ConfusionMatrixDisplay, classification_report, RocCurveDisplay, auc, roc_curve, roc_auc_score
+from sklearn.ensemble import RandomForestClassifier, AdaBoostClassifier, BaggingClassifier, ExtraTreesClassifier, GradientBoostingClassifier, HistGradientBoostingClassifier, StackingClassifier, VotingClassifier
+from sklearn.naive_bayes import GaussianNB, MultinomialNB, BernoulliNB, ComplementNB
+from sklearn.discriminant_analysis import QuadraticDiscriminantAnalysis, LinearDiscriminantAnalysis
+from sklearn.neural_network import BernoulliRBM
 
 from plotly.subplots import make_subplots
 import plotly.graph_objects as go

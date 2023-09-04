@@ -26,8 +26,6 @@ from sklearn.ensemble import RandomForestClassifier, AdaBoostClassifier, Bagging
 from sklearn.naive_bayes import GaussianNB, MultinomialNB, BernoulliNB, ComplementNB
 from sklearn.discriminant_analysis import QuadraticDiscriminantAnalysis, LinearDiscriminantAnalysis
 from sklearn.neural_network import BernoulliRBM
-from sklearn.inspection import DecisionBoundaryDisplay
-from sklearn.model_selection import GridSearchCV
 
 # All inputs execpt random_state should be lists of values, even if only one value
 
