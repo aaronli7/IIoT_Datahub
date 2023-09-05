@@ -60,6 +60,8 @@ datapath = p / "AI_engine/test_data/"
 data = np.load("C:/Users/steph/OneDrive/Documents/GitHub/IIoT_Datahub/AI_engine/test_data/syn2class.npy")
 
 print("shape of  data is ",data.shape)
+#print("NaNs in data? ",np.isnan(np.min(data)))
+
 
 x = data[:, :data.shape[1]-1]  # data
 y = data[:, -1] # label
@@ -68,76 +70,45 @@ y = data[:, -1] # label
 #print("shape of y is ",y.shape)
 
 # normalization on input data x
-x = (x - x.mean(axis=0)) / x.std(axis=0)
+#x = (x - x.mean(axis=0)) / x.std(axis=0)
+#scaler = StandardScaler()
+#x = scaler.fit_transform(x)
+
+#print("x type is ",type(x))
+
+#df = pd.DataFrame(x)
+#check_nan = df.isnull().values.any()
+#print("NaNs present? ",check_nan)
 
 # Use line below with PV_Data Only
 #x = np.delete(x, 799999, 1)  # delete second column of C
 
 X_train, X_test, y_train, y_test = train_test_split(x, y, test_size=0.20, random_state=42)
 
-#print(x)
-#print(X_train)
 
-decision_tree = skb.pipeBuild_DecisionTreeClassifier(criterion=['gini','entropy'],max_depth=[5, 10])
-random_forest = skb.pipeBuild_RandomForestClassifier(criterion=['gini','entropy'],n_estimators=[10], max_depth=[3, 5, 10],max_features=[1])
-knn = skb.pipeBuild_KNeighborsClassifier(n_neighbors=[3,5],weights=['uniform'],algorithm=['auto'],leaf_size=[20,30])
-gauss = skb.pipeBuild_GaussianProcessClassifier(max_iter_predict=[100],multi_class=['one_vs_rest'])
-ada = skb.pipeBuild_AdaBoostClassifier(estimator=[DecisionTreeClassifier()],n_estimators=[50],learning_rate=[1.0])
-gnb = skb.pipeBuild_GaussianNB(priors=[None],var_smoothing=[1.0e-9])
-qda = skb.pipeBuild_QuadraticDiscriminantAnalysis(priors=[None],reg_param=[0.0],store_covariance=[False],tol=[1.0e-4])
-svc = skb.pipeBuild_SVC(C=[1.0],kernel=['rbf'],degree=[3],gamma=['scale'],tol=[1.0e-3],random_state=None)
-mlp = skb.pipeBuild_MLPClassifier(hidden_layer_sizes=[(100,)],activation=['relu'],solver=['adam'],alpha=[0.0001],batch_size=['auto'],learning_rate=['constant'],random_state=None)
-nusvc = skb.pipeBuild_NuSVC(nu=[0.5],kernel=['rbf'],degree=[3],gamma=['scale'],tol=[1.0e-3],random_state=None)
-bag = skb.pipeBuild_BaggingClassifier()
-ex = skb.pipeBuild_ExtraTreesClassifier()
-gb = skb.pipeBuild_GradientBoostingClassifier()
-hgb = skb.pipeBuild_HistGradientBoostingClassifier()
-bnb = skb.pipeBuild_BernoulliNB()
-nc = skb.pipeBuild_NearestCentroid()
-pac = skb.pipeBuild_PassiveAggressiveClassifier()
-lda = skb.pipeBuild_LinearDiscriminantAnalysis()
-sgc = skb.pipeBuild_SGDClassifier()
-rad = skb.pipeBuild_RadiusNeighborsClassifier(radius=[10])
+# Build SST Pipeline.  Currently Not Working.
+#sst = skn.pipeBuild_SstDetector(win_length = len(x[0]), threshold=[0.1,0.5,1.0,5.0,10.0,50.0],is_scaled = [True])
 
-print("x[0] length is ",len(x[0]))
-sst = skn.pipeBuild_SstDetector(win_length = len(x[0]), threshold=[0.1,0.5,1.0,5.0,10.0,50.0],is_scaled = [True])
+# Build SK Learn Pipelines
+onesvm = skn.pipeBuild_OneClassSVM(kernel=['rbf','linear'])
+sgd1svm = skn.pipeBuild_SGDOneClassSVM(learning_rate=['adaptive','optimal'])
 
-#kdt = skb.pipeBuild_KDTree(X=[(len(x[0]),y.max()+1)])
-#ball = skb.pipeBuild_BallTree(X=[(len(x[0]),y.max()+1)])
-#cnb = skb.pipeBuild_ComplementNB() # cannot handle negative values
-#mnb = skb.pipeBuild_MultinomialNB() # cannot handle negative values
-#stk = skb.pipeBuild_StackingClassifier() # Not Working
-#vt = skb.pipeBuild_VotingClassifier() # Not Working
+# Run All
+#names = ['1 Class SVM','SGD 1 Class SVM]
+#pipes = [onesvm,sgd1svm]
 
-#names = ['Decision Tree','Random Forest','KNN','Gaussian','AdaBoost','GaussianNB','QDA','SVC','MLP','NuSVC','Bagging','Extra Trees','Gradient Boost','Hist Grad Boost','Bernoulli NB','N. Centroid','PassAgress','LDA','SGD','Radius NN']
-#pipes = [decision_tree,random_forest,knn,gauss,ada,gnb,qda,svc,mlp,nusvc,bag,ex,gb,hgb,bnb,nc,pac,lda,sgc,rad]
+# Run One
+names=['SGD 1 Class SVM']
+pipes=[sgd1svm]
 
-names=['SST']
-pipes=[sst]
 
-titles = []
-for t in names:
-    tn = t + ' Train'
-    ts = t + ' Test'
-    titles.append(tn)
-    titles.append(ts)
 
-#"""
+
 #x_min, x_max = X_train[:, 0].min() - 0.5, X_train[:, 0].max() + 0.5
 #y_min, y_max = X_test[:, 1].min() - 0.5, X_test[:, 1].max() + 0.5
 
 samples = np.arange(len(X_train[0,:]))
 #print("samples: ",samples)
-
-# Plot Training Set
-#fig1 = px.scatter(x = samples,y = X_train[0,:],title="Sample Data Entry")
-#st.plotly_chart(fig1)
-#fig1.show()
-
-# Plot Testing Set
-#fig1.append_trace(go.Scatter(x = X_test[:, 0],y = X_test[:, 1],),row=i,col=1)
-
-#fig2, ax = plt.subplots(1,len(names))
 
 # iterate over classifiers
 for j in range(len(names)):
@@ -149,19 +120,8 @@ for j in range(len(names)):
     print(grid_search.best_params_)
     y_pred = grid_search.predict(X_test)
     print(classification_report(y_test, y_pred))
-    ConfusionMatrixDisplay.from_estimator(grid_search, X_test, y_test, xticks_rotation="vertical")
-    
-    #if j == 0:
-    #    fig_0 = skb.plot_cv_results(grid_search.cv_results_, 'decision__criterion', 'decision__max_depth')
-    #elif j == 1:
-    #    fig_1 = skb.plot_cv_results(grid_search.cv_results_, 'random__criterion', 'random__max_depth')
+    #ConfusionMatrixDisplay.from_estimator(grid_search, X_test, y_test, xticks_rotation="vertical")
 
-    #fpr, tpr, thresholds = roc_curve(y_test, y_pred)
-    #roc_auc = auc(fpr, tpr)
-    #RocCurveDisplay(fpr=fpr, tpr=tpr, roc_auc=roc_auc,estimator_name=grid_search)
-
-plt.tight_layout()
-#st.pyplot(plt)
-plt.show()
-#fig2.show()
+#plt.tight_layout()
+#plt.show()
 #"""
