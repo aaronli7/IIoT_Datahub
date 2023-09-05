@@ -41,7 +41,7 @@ import plotly.express as px
 
 import joblib
 
-import load_data
+import load_data as ld
 import sk_classifier_builder as skb
 import sk_classifier_metrics as skm
 
@@ -57,7 +57,9 @@ datapath = p / "AI_engine/test_data/"
 
 #data = np.load("C:/Users/steph/OneDrive/Documents/GitHub/IIoT_Datahub/AI_engine/test_data/synthetic_dataset.npy")
 #data = np.load(datapath / "synthetic_dataset.npy")
-data = np.load("C:/Users/steph/OneDrive/Documents/GitHub/IIoT_Datahub/AI_engine/test_data/syn2class.npy")
+#data = np.load("C:/Users/steph/OneDrive/Documents/GitHub/IIoT_Datahub/AI_engine/test_data/syn2class.npy")
+data = ld.selectFileAndLoad()
+
 
 print("shape of  data is ",data.shape)
 #print("NaNs in data? ",np.isnan(np.min(data)))
@@ -65,23 +67,6 @@ print("shape of  data is ",data.shape)
 
 x = data[:, :data.shape[1]-1]  # data
 y = data[:, -1] # label
-
-#print("shape of x is ",x.shape)
-#print("shape of y is ",y.shape)
-
-# normalization on input data x
-#x = (x - x.mean(axis=0)) / x.std(axis=0)
-#scaler = StandardScaler()
-#x = scaler.fit_transform(x)
-
-#print("x type is ",type(x))
-
-#df = pd.DataFrame(x)
-#check_nan = df.isnull().values.any()
-#print("NaNs present? ",check_nan)
-
-# Use line below with PV_Data Only
-#x = np.delete(x, 799999, 1)  # delete second column of C
 
 X_train, X_test, y_train, y_test = train_test_split(x, y, test_size=0.20, random_state=42)
 

@@ -28,7 +28,7 @@ import plotly.express as px
 
 import joblib
 
-import load_data
+import load_data as ld
 import sk_regressor_builder as skr
 
 
@@ -44,14 +44,19 @@ datapath = p / "AI_engine/test_data/"
 #data = np.load(datapath / "synthetic_dataset.npy")
 #data = np.load("C:/Users/steph/OneDrive/Documents/GitHub/IIoT_Datahub/AI_engine/test_data/syn2class.npy")
 
-# Load the Sklearn dataset
-dataset = datasets.load_diabetes()
-# Read the DataFrame, first using the feature data
-df = pd.DataFrame(dataset.data, columns=dataset.feature_names)
-# Add a target column, and fill it with the target data
-df['target'] = dataset.target
-# Convert to Numpy Array
-data = df.to_numpy().copy()
+data = ld.selectFileAndLoad()
+# if dataset == None:
+#     # Load the Sklearn dataset
+#     dataset = datasets.load_diabetes()
+#     # Read the DataFrame, first using the feature data
+#     df = pd.DataFrame(dataset.data, columns=dataset.feature_names)
+#     # Add a target column, and fill it with the target data
+#     df['target'] = dataset.target
+#     # Convert to Numpy Array
+#     data = df.to_numpy().copy()
+#     np.save(datapath / 'sk_diabetes.npy', data)
+# else:
+#     data = dataset.copy()
 
 
 #"""

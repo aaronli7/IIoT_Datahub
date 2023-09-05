@@ -31,6 +31,8 @@ import sk_classifier_builder as skb
 import sk_classifier_metrics as skm
 import filter_builder as fltr
 
+import load_data as ld
+
 st.title('Filter Demo')
 
 p = Path('.')

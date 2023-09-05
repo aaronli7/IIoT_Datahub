@@ -16,7 +16,7 @@ from numpy import array
 
 from sklearn.model_selection import train_test_split
 import filter_builder as fltr
-
+import load_data as ld
 
 # Wiener
 def testWiener(y):
@@ -30,7 +30,9 @@ save_model_path = p / "AI_engine/saved_models/"
 datapath = p / "AI_engine/test_data/"
 
 #data = np.load("C:/Users/steph/OneDrive/Documents/GitHub/IIoT_Datahub/AI_engine/test_data/synthetic_dataset.npy")
-data = np.load(datapath / "synthetic_dataset.npy")
+#data = np.load(datapath / "synthetic_dataset.npy")
+data = ld.selectFileAndLoad()
+
 
 #print("shape of  data is ",data.shape)
 

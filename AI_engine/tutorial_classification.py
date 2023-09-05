@@ -41,11 +41,12 @@ import plotly.express as px
 
 import joblib
 
-import load_data
+import load_data as ld
 import sk_classifier_builder as skb
 import sk_classifier_metrics as skm
 
 import sk_novelty_builder as skn
+
 
 #st.title('Streamlit Demo')
 
@@ -56,7 +57,8 @@ save_model_path = p / "AI_engine/saved_models/"
 datapath = p / "AI_engine/test_data/"
 
 #data = np.load("C:/Users/steph/OneDrive/Documents/GitHub/IIoT_Datahub/AI_engine/test_data/synthetic_dataset.npy")
-data = np.load(datapath / "synthetic_dataset.npy")
+#data = np.load(datapath / "synthetic_dataset.npy")
+data = ld.selectFileAndLoad()
 
 print("shape of  data is ",data.shape)
 
