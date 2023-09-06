@@ -125,7 +125,6 @@ class SingularSpectrumTransformation():
         # else:
         x_hist = x[:self.win_length+self.lag]
         x_new = x[self.lag:]
-        #print("....................... x_hist & x_new shapes are ",x_hist.shape," ",x_new.shape)
         score, x1 = _score_online(x_hist, x_new, self.x0, self.order,
             self.win_length, self.lag, self.n_components, self.rank_lanczos,
             self.eps, use_lanczos=self.use_lanczos)
@@ -138,7 +137,6 @@ def _score_online(x, y, x0, order, win_length, lag, n_components, rank, eps, use
     # start_idx = win_length + order + lag + 1
     # end_idx = x.size + 1
 
-    #print("xxxxxxxxxxxxxxxxxxxxxx Shape of x is ",x.shape)
 
     score = np.zeros(1)
     # for t in range(start_idx, end_idx):
@@ -148,23 +146,20 @@ def _score_online(x, y, x0, order, win_length, lag, n_components, rank, eps, use
     X_history = _create_hankel(x, order,
         start=order,
         end=win_length)
-    #print("hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh shape of X_history is ",X_history.shape)
+
     X_test = _create_hankel(y, order,
         start=order,
         end=win_length)
 
-    #print("ttttttttttttttttttttttttttttttt Shape of X_test is ",X_test.shape)
 
     if use_lanczos:
         score, x1 = _sst_lanczos(X_test, X_history, n_components,
                                       rank, x0)
         # update initial vector for power method
-        #print("/////////////////////////////// shapes of x0 & x1 are ",x0.size," ",x1.size)
         x0 = x1 + eps * np.random.rand(x0.size)
         x0 /= np.linalg.norm(x0)
     else:
         score = _sst_svd(X_test, X_history, n_components)
-        #print("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< shapes of x0 & x1 are ",x0.size," ",x1.size)
 
     return score,x0
 
@@ -192,7 +187,6 @@ def _create_hankel(x, order, start, end):
 @jit(nopython=True)
 def _sst_lanczos(X_test, X_history, n_components, rank, x0):
     """Run sst algorithm with lanczos method (FELIX-SST algorithm)."""
-    #print("LLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLL shap of x_test & x_history are ",X_test.shape," ",X_history.shape)
     P_history = X_history.T @ X_history
     P_test = X_test.T @ X_test
     # calculate the first singular vec of test matrix

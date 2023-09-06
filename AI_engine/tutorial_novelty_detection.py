@@ -61,18 +61,20 @@ datapath = p / "AI_engine/test_data/"
 data = ld.selectFileAndLoad()
 
 
-print("shape of  data is ",data.shape)
+print("shape of data is ",data.shape)
 #print("NaNs in data? ",np.isnan(np.min(data)))
 
 
 x = data[:, :data.shape[1]-1]  # data
 y = data[:, -1] # label
+print("shape of x is ",x.shape)
+print("length of x is ",len(x[0]))
 
 X_train, X_test, y_train, y_test = train_test_split(x, y, test_size=0.20, random_state=42)
 
 
-# Build SST Pipeline.  Currently Not Working. # len(x[0])
-sst = skn.pipeBuild_SstDetector(win_length = 20, order=10, threshold=[0.1,0.75,1.0,5.0,10.0,50.0], is_scaled = [True],lag=[10])
+# Build SST Pipeline.  Working So Long as valid variable combinations are selected for win_lenth, order, and lag. 
+sst = skn.pipeBuild_SstDetector(win_length = 20, order=[10], threshold=[0.1,0.75,1.0,5.0,10.0,50.0], is_scaled = [True],lag=[10])
 
 # Build SK Learn Pipelines
 onesvm = skn.pipeBuild_OneClassSVM(kernel=['rbf','linear'])
