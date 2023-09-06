@@ -72,7 +72,7 @@ X_train, X_test, y_train, y_test = train_test_split(x, y, test_size=0.20, random
 
 
 # Build SST Pipeline.  Currently Not Working.
-#sst = skn.pipeBuild_SstDetector(win_length = len(x[0]), threshold=[0.1,0.5,1.0,5.0,10.0,50.0],is_scaled = [True])
+sst = skn.pipeBuild_SstDetector(win_length = len(x[0]), threshold=[0.1,0.5,1.0,5.0,10.0,50.0],is_scaled = [True],order=[25],lag=[10])
 
 # Build SK Learn Pipelines
 onesvm = skn.pipeBuild_OneClassSVM(kernel=['rbf','linear'])
@@ -83,8 +83,8 @@ sgd1svm = skn.pipeBuild_SGDOneClassSVM(learning_rate=['adaptive','optimal'])
 #pipes = [onesvm,sgd1svm]
 
 # Run One
-names=['SGD 1 Class SVM']
-pipes=[sgd1svm]
+names=['SST']
+pipes=[sst]
 
 
 
