@@ -71,8 +71,8 @@ y = data[:, -1] # label
 X_train, X_test, y_train, y_test = train_test_split(x, y, test_size=0.20, random_state=42)
 
 
-# Build SST Pipeline.  Currently Not Working.
-sst = skn.pipeBuild_SstDetector(win_length = len(x[0]), threshold=[0.1,0.5,1.0,5.0,10.0,50.0],is_scaled = [True],order=[25],lag=[10])
+# Build SST Pipeline.  Currently Not Working. # len(x[0])
+sst = skn.pipeBuild_SstDetector(win_length = 20, order=10, threshold=[0.1,0.75,1.0,5.0,10.0,50.0], is_scaled = [True],lag=[10])
 
 # Build SK Learn Pipelines
 onesvm = skn.pipeBuild_OneClassSVM(kernel=['rbf','linear'])
@@ -87,13 +87,19 @@ names=['SST']
 pipes=[sst]
 
 
-
-
 #x_min, x_max = X_train[:, 0].min() - 0.5, X_train[:, 0].max() + 0.5
 #y_min, y_max = X_test[:, 1].min() - 0.5, X_test[:, 1].max() + 0.5
 
 samples = np.arange(len(X_train[0,:]))
 #print("samples: ",samples)
+
+# Plot Training Set
+plt.plot(X_train[0,:]) 
+plt.plot(X_train[1,:]) 
+plt.plot(X_train[2,:]) 
+#fig1 = px.scatter(x = samples,y = X_train[0,:],title="Sample Data Entry")
+#st.plotly_chart(fig1)
+plt.show()
 
 # iterate over classifiers
 for j in range(len(names)):

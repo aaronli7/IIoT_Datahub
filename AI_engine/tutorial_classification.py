@@ -123,9 +123,12 @@ samples = np.arange(len(X_train[0,:]))
 #print("samples: ",samples)
 
 # Plot Training Set
+plt.plot(X_train[0,:]) 
+plt.plot(X_train[1,:]) 
+plt.plot(X_train[2,:]) 
 #fig1 = px.scatter(x = samples,y = X_train[0,:],title="Sample Data Entry")
 #st.plotly_chart(fig1)
-#fig1.show()
+plt.show()
 
 # Plot Testing Set
 #fig1.append_trace(go.Scatter(x = X_test[:, 0],y = X_test[:, 1],),row=i,col=1)

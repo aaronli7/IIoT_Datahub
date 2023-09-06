@@ -50,7 +50,8 @@ def pipeBuild_SGDOneClassSVM(nu=[0.5],fit_intercept=[True], max_iter=[1000], tol
   pipeline = Pipeline(steps=[('sgd1svm', classifier)])
   params = [{
         'sgd1svm__nu': nu,
-        'sgd1svm__fit_intercept': fit_intercept,        
+        'sgd1svm__fit_intercept': fit_intercept,
+        'sgd1svm__max_iter': max_iter,        
         'sgd1svm__tol': tol,        
         'sgd1svm__shuffle': shuffle,
         'sgd1svm__verbose': verbose,
@@ -63,9 +64,9 @@ def pipeBuild_SGDOneClassSVM(nu=[0.5],fit_intercept=[True], max_iter=[1000], tol
   return pipeline, params
 
 # SST ANOMALY DETECTOR
-def pipeBuild_SstDetector(win_length,threshold=[0.5], n_components=[5], order=[None], lag=[None],
+def pipeBuild_SstDetector(win_length,threshold=[0.5], order=[None], n_components=[5],lag=[None],
                  is_scaled=[False], use_lanczos=[True], rank_lanczos=[None], eps=[1e-3]):
-  classifier = sst.SstAnomalyDetector(win_length=win_length,threshold=threshold)
+  classifier = sst.SstAnomalyDetector(win_length=win_length,threshold=threshold,order=order)
   pipeline = Pipeline(steps=[('sst', classifier)])
   params = [{
         'sst__threshold': threshold,
