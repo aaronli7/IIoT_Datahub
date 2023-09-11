@@ -76,17 +76,27 @@ X_train, X_test, y_train, y_test = train_test_split(x, y, test_size=0.20, random
 # Build SST Pipeline.  Working So Long as valid variable combinations are selected for win_lenth, order, and lag. 
 sst = skn.pipeBuild_SstDetector(win_length = 20, order=[10], threshold=[0.1,0.75,1.0,5.0,10.0,50.0], is_scaled = [True],lag=[10])
 
-# Build SK Learn Pipelines
+# Build SK Learn Pipelines for Novelty Detection
 onesvm = skn.pipeBuild_OneClassSVM(kernel=['rbf','linear'])
 sgd1svm = skn.pipeBuild_SGDOneClassSVM(learning_rate=['adaptive','optimal'])
+lofn = skn.pipeBuild_LocalOutlierFactor(algorithm=['ball_tree','kd_tree'],novelty=[True])
 
-# Run All
-#names = ['1 Class SVM','SGD 1 Class SVM]
-#pipes = [onesvm,sgd1svm]
+# Build Sk Learn Pipelines for Outlier Detection
+lofo = skn.pipeBuild_LocalOutlierFactor(algorithm=['ball_tree','kd_tree'],novelty=[False])
+ellenv = skn.pipeBuild_EllipticEnvelope()
+isofrst = skn.pipeBuild_IsolationForest()
+
+# Run All Novelty
+#names = ['1 Class SVM','SGD 1 Class SVM','SST','LOF Novelty']
+#pipes = [onesvm,sgd1svm,sst,lofn]
+
+# Run All Outlier
+#names = ['LOF outlier','Elliptic Envelope']
+#pipes = [lofo]
 
 # Run One
-names=['SST']
-pipes=[sst]
+names=['Isolation Forest']
+pipes=[isofrst]
 
 
 #x_min, x_max = X_train[:, 0].min() - 0.5, X_train[:, 0].max() + 0.5

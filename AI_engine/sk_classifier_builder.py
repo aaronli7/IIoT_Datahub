@@ -27,6 +27,8 @@ from sklearn.naive_bayes import GaussianNB, MultinomialNB, BernoulliNB, Compleme
 from sklearn.discriminant_analysis import QuadraticDiscriminantAnalysis, LinearDiscriminantAnalysis
 from sklearn.neural_network import BernoulliRBM
 
+from tslearn.early_classification import NonMyopicEarlyClassifier
+
 # All inputs execpt random_state should be lists of values, even if only one value
 
 # DECISION TREE CLASSIFIER
@@ -310,67 +312,18 @@ def pipeBuild_BernoulliNB(alpha=[1.0],force_alpha=[True],binarize=[0.0],fit_prio
   }]
   return pipeline, params
 
-
-"""
-# KD TREE
-def pipeBuild_KDTree(X,leaf_size=[40],metric=['minkowski']):
-  classifier = KDTree(X)
-  pipeline = Pipeline(steps=[('kdt', classifier)])
-  
+# NON-MYOPIC EARLY CLASSIFIER (TS LEARN)
+  # n_clusters is the number of labelled classes (required)
+def pipeBuild_NonMyopicEarlyClassifier(n_clusters=[2], base_classifier=[None], min_t=[1], lamb=[1.0], 
+                                       cost_time_parameter=[1.0], random_state=None):
+  classifier = NonMyopicEarlyClassifier(n_clusters=n_clusters,random_state=random_state)
+  pipeline = Pipeline(steps=[('early', classifier)])
+  #pipeline = make_pipeline(classifier)
   params = [{
-      'kdt__leaf_size': leaf_size,
-      'kdt__metric': metric,
-  }]
+        'early__n_clusters': n_clusters,
+        'early__base_classifier': base_classifier,
+        'early__min_t': min_t,
+        'early__lamb': lamb,
+        'early__cost_time_parameter': cost_time_parameter,
+    }]
   return pipeline, params
-
-# BALL TREE
-def pipeBuild_BallTree(X,leaf_size=[40],metric=['minkowski']):
-  classifier = BallTree(X)
-  pipeline = Pipeline(steps=[('ball', classifier)])
-  
-  params = [{
-      'ball__leaf_size': leaf_size,
-      'ball__metric': metric,
-  }]
-  return pipeline, params
-
-# COMPLEMENT NAIVE BAYES CLASSIFIER
-def pipeBuild_ComplementNB(alpha=[1.0],force_alpha=[True],fit_prior=[True],class_prior=[None],norm=[False]):
-  classifier = ComplementNB()
-  pipeline = Pipeline(steps=[('cnb', classifier)])
-  
-  params = [{
-      'cnb__alpha': alpha,
-      'cnb__force_alpha': force_alpha,
-      'cnb__fit_prior': fit_prior,
-      'cnb__class_prior': class_prior,
-      'cnb__norm': norm,
-  }]
-  return pipeline, params
-
-# STACKING CLASSIFIER - Not Working, same issue as Voting Classifier
-def pipeBuild_StackingClassifier(estimators=[('dt_def', DecisionTreeClassifier()),('knn_def', KNeighborsClassifier()),],final_estimator=[None],cv=[None],stack_method=['auto']):
-  classifier = StackingClassifier(estimators=estimators)
-  pipeline = Pipeline(steps=[('stack', classifier)])
-  
-  params = [{
-      'stack__estimators': estimators,
-      'stack__final_estimator': final_estimator,
-      'stack__cv': cv,
-      'stack__stack_method': stack_method,
-  }]
-  return pipeline, params
-
-# VOTING CLASSIFIER - NOT WORKING
-
-def pipeBuild_VotingClassifier(estimators=[[DecisionTreeClassifier()],[KNeighborsClassifier()]],voting=['hard'],weights=[None]):
-  classifier = VotingClassifier(estimators=estimators)
-  pipeline = Pipeline(steps=[('vote', classifier)])
-  
-  params = [{
-      'vote__estimators': estimators,
-      'vote__voting': voting,
-      'vote__weights': weights,
-  }]
-  return pipeline, params
-#"""

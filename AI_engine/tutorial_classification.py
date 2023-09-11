@@ -65,6 +65,9 @@ print("shape of  data is ",data.shape)
 x = data[:, :data.shape[1]-1]  # data
 y = data[:, -1] # label
 
+n_classes = int(np.amax(y)+1)
+print("number of classes is ",n_classes)
+
 #print("shape of x is ",x.shape)
 #print("shape of y is ",y.shape)
 
@@ -79,6 +82,7 @@ X_train, X_test, y_train, y_test = train_test_split(x, y, test_size=0.20, random
 #print(x)
 #print(X_train)
 
+#SK LEARN
 decision_tree = skb.pipeBuild_DecisionTreeClassifier(criterion=['gini','entropy'],max_depth=[5, 10])
 random_forest = skb.pipeBuild_RandomForestClassifier(criterion=['gini','entropy'],n_estimators=[10], max_depth=[3, 5, 10],max_features=[1])
 knn = skb.pipeBuild_KNeighborsClassifier(n_neighbors=[3,5],weights=['uniform'],algorithm=['auto'],leaf_size=[20,30])
@@ -100,13 +104,16 @@ lda = skb.pipeBuild_LinearDiscriminantAnalysis()
 sgc = skb.pipeBuild_SGDClassifier()
 rad = skb.pipeBuild_RadiusNeighborsClassifier(radius=[10])
 
+#TS LEARN
+early = skb.pipeBuild_NonMyopicEarlyClassifier(n_clusters=[n_classes])
+
 # Run All
-names = ['Decision Tree','Random Forest','KNN','Gaussian','AdaBoost','GaussianNB','QDA','SVC','MLP','NuSVC','Bagging','Extra Trees','Gradient Boost','Hist Grad Boost','Bernoulli NB','N. Centroid','PassAgress','LDA','SGD','Radius NN']
-pipes = [decision_tree,random_forest,knn,gauss,ada,gnb,qda,svc,mlp,nusvc,bag,ex,gb,hgb,bnb,nc,pac,lda,sgc,rad]
+#names = ['Decision Tree','Random Forest','KNN','Gaussian','AdaBoost','GaussianNB','QDA','SVC','MLP','NuSVC','Bagging','Extra Trees','Gradient Boost','Hist Grad Boost','Bernoulli NB','N. Centroid','PassAgress','LDA','SGD','Radius NN']
+#pipes = [decision_tree,random_forest,knn,gauss,ada,gnb,qda,svc,mlp,nusvc,bag,ex,gb,hgb,bnb,nc,pac,lda,sgc,rad]
 
 # Run One
-# names=['Decision Tree']
-# pipes=[decision_tree]
+names=['Non-Myopic Early']
+pipes=[early]
 
 titles = []
 for t in names:
