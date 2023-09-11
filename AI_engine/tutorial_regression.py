@@ -79,6 +79,7 @@ X_train, X_test, y_train, y_test = train_test_split(x, y, test_size=0.20, random
 #print(x)
 #print(X_train)
 
+# SK LEARN REGRESSORS
 svr = skr.pipeBuild_SVR(kernel=['linear','rbf'])
 nusvr = skr.pipeBuild_NuSVR(kernel=['linear','rbf'])
 lsvr = skr.pipeBuild_LinearSVR(loss=['epsilon_insensitive','squared_epsilon_insensitive'])
@@ -100,16 +101,20 @@ elastic = skr.pipeBuild_ElasticNet(selection=['cyclic','random'])
 lars = skr.pipeBuild_Lars()
 lasso = skr.pipeBuild_Lasso(selection=['cyclic','random'])
 
+#TS LEARN REGRESSORS
+tsknn = skr.pipeBuild_KNeighborsTimeSeriesRegressor()
+tssvr = skr.pipeBuild_TimeSeriesSVR()
+
 # Run All
-names = ['SVR','NuSVR','LinearSVR','Ridge','RidgeCV','LinearRegression','SGD','Bayesian ADR',
-   'Bayesian Ridge','Passive Aggressive','Gamma','Poisson','Tweedie','Huber','Quantile','RANSCAR',
-   'ThielSen','ElasticNet','Lars','Lasso']
-pipes = [svr,nusvr,lsvr,ridge,ridgecv,linreg,sgd,ard,bayridge,par,gamma,poiss,tweed,huber,quant,
-   ranscar,thielsen,elastic,lars,lasso]
+#names = ['SVR','NuSVR','LinearSVR','Ridge','RidgeCV','LinearRegression','SGD','Bayesian ADR',
+#   'Bayesian Ridge','Passive Aggressive','Gamma','Poisson','Tweedie','Huber','Quantile','RANSCAR',
+#   'ThielSen','ElasticNet','Lars','Lasso','TS KNN','TS SVR']
+#pipes = [svr,nusvr,lsvr,ridge,ridgecv,linreg,sgd,ard,bayridge,par,gamma,poiss,tweed,huber,quant,
+#   ranscar,thielsen,elastic,lars,lasso,tsknn,tssvr]
 
 # Run Single
-#names=['Lasso']
-#pipes=[lasso]
+names=['TS KNN','TS SVR']
+pipes=[tsknn,tssvr]
 
 titles = []
 for t in names:

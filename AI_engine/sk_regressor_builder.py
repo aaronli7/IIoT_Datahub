@@ -18,6 +18,9 @@ from sklearn.gaussian_process.kernels import RBF
 from sklearn.svm import SVR, NuSVR, LinearSVR
 from sklearn.linear_model import ARDRegression, BayesianRidge, ElasticNet, GammaRegressor, HuberRegressor, Lars, Lasso, LinearRegression, PassiveAggressiveRegressor, PoissonRegressor, QuantileRegressor, RANSACRegressor, Ridge, RidgeCV, SGDRegressor, TheilSenRegressor, TweedieRegressor
 
+from tslearn.neighbors import KNeighborsTimeSeriesRegressor
+from tslearn.svm import TimeSeriesSVR
+
 # All inputs execpt random_state should be lists of values, even if only one value
 
 # SUPPORT VECTOR MACHINE
@@ -379,5 +382,42 @@ def pipeBuild_Lasso(alpha=[1.0],fit_intercept=[True],precompute=[False],max_iter
         'elastic__warm_start': warm_start,
         'elastic__positive': positive,
         'elastic__selection': selection,
+    }]
+  return pipeline, params
+
+# KNN REGRESSOR (TS LEARN)
+def pipeBuild_KNeighborsTimeSeriesRegressor(n_neighbors=[5], weights=['uniform'], metric=['dtw'], 
+                                            metric_params=[None], n_jobs=[None], verbose=[0]):
+  regressor = KNeighborsTimeSeriesRegressor()
+  pipeline = Pipeline(steps=[('tsknnreg', regressor)])
+  params = [{
+        'tsknnreg__n_neighbors': n_neighbors,
+        'tsknnreg__ weights':  weights,
+        'tsknnreg__metric': metric,
+        'tsknnreg__metric_params': metric_params,
+        'tsknnreg__n_jobs': n_jobs,        
+        'tsknnreg__verbose': verbose,
+    }]
+  return pipeline, params
+
+# SUPPORT VECTOR MACHINE REGRESSOR (TS LEARN)
+def pipeBuild_TimeSeriesSVR(C=[1.0], kernel=['gak'], degree=[3], gamma=['auto'], coef0=[0.0], tol=[0.001], 
+                            epsilon=[0.1], shrinking=[True], cache_size=[200], n_jobs=[None], 
+                            verbose=[0], max_iter=[-1]):
+  regressor = TimeSeriesSVR()
+  pipeline = Pipeline(steps=[('tssvr', regressor)])
+  params = [{
+        'tssvr__C': C,
+        'tssvr__ kernel':  kernel,
+        'tssvr__degree': degree,
+        'tssvr__gamma': gamma,
+        'tssvr__coef0': coef0,        
+        'tssvr__tol': tol,
+        'tssvr__epsilon': epsilon,
+        'tssvr__ shrinking':  shrinking,
+        'tssvr__cache_size': cache_size,
+        'tssvr__n_jobs': n_jobs,              
+        'tssvr__verbose': verbose,
+        'tssvr__max_iter': max_iter, 
     }]
   return pipeline, params

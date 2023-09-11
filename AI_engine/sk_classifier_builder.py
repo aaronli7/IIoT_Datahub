@@ -28,6 +28,8 @@ from sklearn.discriminant_analysis import QuadraticDiscriminantAnalysis, LinearD
 from sklearn.neural_network import BernoulliRBM
 
 from tslearn.early_classification import NonMyopicEarlyClassifier
+from tslearn.neighbors import KNeighborsTimeSeriesClassifier
+from tslearn.svm import TimeSeriesSVC
 
 # All inputs execpt random_state should be lists of values, even if only one value
 
@@ -326,4 +328,45 @@ def pipeBuild_NonMyopicEarlyClassifier(n_clusters=[2], base_classifier=[None], m
         'early__lamb': lamb,
         'early__cost_time_parameter': cost_time_parameter,
     }]
+  return pipeline, params
+
+# K NEAREST NEIGHBORS (TS LEARN)
+def pipeBuild_KNeighborsTimeSeriesClassifier(n_neighbors=[5], weights=['uniform'], metric=['dtw'], 
+                                             metric_params=[None],  n_jobs=[None], verbose=[0]):
+  classifier = KNeighborsTimeSeriesClassifier()
+  pipeline = Pipeline(steps=[('tsknn', classifier)])
+  #pipeline = make_pipeline(classifier)
+  params = [{
+        'tsknn__n_neighbors': n_neighbors,
+        'tsknn__weights': weights,
+        'tsknn__metric': metric,
+        'tsknn__metric_params': metric_params,
+        'tsknn__n_jobs':  n_jobs,
+        'tsknn__verbose':  verbose,
+    }]
+  return pipeline, params
+
+# SUPPORT VECTOR CLASSIFIER (TS LEARN)
+def pipeBuild_TimeSeriesSVC(C=[1.0],kernel=['gak'],degree=[3],gamma=['auto'],coef0=[0.0], shrinking=[True], 
+                            probability=[False], tol=[1.0e-3],cache_size=[200], class_weight=[None], 
+                            n_jobs=[None], verbose=[0], max_iter=[-1], decision_function_shape=['ovr'], 
+                            random_state=None):
+  classifier = TimeSeriesSVC(random_state=random_state)
+  pipeline = Pipeline(steps=[('tssvc', classifier)])
+  
+  params = [{
+      'tssvc__C': C,
+      'tssvc__kernel': kernel,
+      'tssvc__degree': degree,
+      'tssvc__gamma': gamma,
+      'tssvc__coef0': coef0,
+      'tssvc__probability': probability,
+      'tssvc__tol': tol,
+      'tssvc__cache_size': cache_size,
+      'tssvc__class_weight': class_weight,
+      'tssvc__n_jobs': n_jobs,
+      'tssvc__verbose': verbose,
+      'tssvc__max_iter': max_iter,
+      'tssvc__decision_function_shape': decision_function_shape,
+  }]
   return pipeline, params

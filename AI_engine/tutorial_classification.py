@@ -106,14 +106,20 @@ rad = skb.pipeBuild_RadiusNeighborsClassifier(radius=[10])
 
 #TS LEARN
 early = skb.pipeBuild_NonMyopicEarlyClassifier(n_clusters=[n_classes])
+tsknn = skb.pipeBuild_KNeighborsTimeSeriesClassifier()
+tssvc = skb.pipeBuild_TimeSeriesSVC()
 
 # Run All
-#names = ['Decision Tree','Random Forest','KNN','Gaussian','AdaBoost','GaussianNB','QDA','SVC','MLP','NuSVC','Bagging','Extra Trees','Gradient Boost','Hist Grad Boost','Bernoulli NB','N. Centroid','PassAgress','LDA','SGD','Radius NN']
-#pipes = [decision_tree,random_forest,knn,gauss,ada,gnb,qda,svc,mlp,nusvc,bag,ex,gb,hgb,bnb,nc,pac,lda,sgc,rad]
+#names = ['Decision Tree','Random Forest','KNN','Gaussian','AdaBoost','GaussianNB','QDA','SVC','MLP','NuSVC','Bagging','Extra Trees','Gradient Boost','Hist Grad Boost','Bernoulli NB','N. Centroid','PassAgress','LDA','SGD','Radius NN','Non-Myopic Early','TS KNN','TS SVC']
+#pipes = [decision_tree,random_forest,knn,gauss,ada,gnb,qda,svc,mlp,nusvc,bag,ex,gb,hgb,bnb,nc,pac,lda,sgc,rad,early,tsknn,tssvc]
+
+# Run All TS Learn
+#names=['Non-Myopic Early','TS KNN','TS SVC']
+#pipes=[early,tsknn,tssvc]
 
 # Run One
-names=['Non-Myopic Early']
-pipes=[early]
+names=['TS SVC']
+pipes=[tssvc]
 
 titles = []
 for t in names:
