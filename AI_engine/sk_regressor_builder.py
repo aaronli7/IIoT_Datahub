@@ -386,7 +386,7 @@ def pipeBuild_Lasso(alpha=[1.0],fit_intercept=[True],precompute=[False],max_iter
   return pipeline, params
 
 # KNN REGRESSOR (TS LEARN)
-def pipeBuild_KNeighborsTimeSeriesRegressor(n_neighbors=[5], weights=['uniform'], metric=['dtw'], 
+def pipeBuild_KNeighborsTimeSeriesRegressor(n_neighbors=[5], weights=['uniform'], metric=['dtw'],
                                             metric_params=[None], n_jobs=[None], verbose=[0]):
   regressor = KNeighborsTimeSeriesRegressor()
   pipeline = Pipeline(steps=[('tsknnreg', regressor)])
@@ -401,8 +401,8 @@ def pipeBuild_KNeighborsTimeSeriesRegressor(n_neighbors=[5], weights=['uniform']
   return pipeline, params
 
 # SUPPORT VECTOR MACHINE REGRESSOR (TS LEARN)
-def pipeBuild_TimeSeriesSVR(C=[1.0], kernel=['gak'], degree=[3], gamma=['auto'], coef0=[0.0], tol=[0.001], 
-                            epsilon=[0.1], shrinking=[True], cache_size=[200], n_jobs=[None], 
+def pipeBuild_TimeSeriesSVR(C=[1.0], kernel=['gak'], degree=[3], gamma=['auto'], coef0=[0.0], tol=[0.001],
+                            epsilon=[0.1], shrinking=[True], cache_size=[200], n_jobs=[None],
                             verbose=[0], max_iter=[-1]):
   regressor = TimeSeriesSVR()
   pipeline = Pipeline(steps=[('tssvr', regressor)])

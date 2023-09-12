@@ -102,8 +102,9 @@ lars = skr.pipeBuild_Lars()
 lasso = skr.pipeBuild_Lasso(selection=['cyclic','random'])
 
 #TS LEARN REGRESSORS
-tsknn = skr.pipeBuild_KNeighborsTimeSeriesRegressor()
 tssvr = skr.pipeBuild_TimeSeriesSVR()
+tsknn = skr.pipeBuild_KNeighborsTimeSeriesRegressor(weights=['distance'])
+
 
 # Run All
 #names = ['SVR','NuSVR','LinearSVR','Ridge','RidgeCV','LinearRegression','SGD','Bayesian ADR',
@@ -113,8 +114,8 @@ tssvr = skr.pipeBuild_TimeSeriesSVR()
 #   ranscar,thielsen,elastic,lars,lasso,tsknn,tssvr]
 
 # Run Single
-names=['TS KNN','TS SVR']
-pipes=[tsknn,tssvr]
+names=['TS SVR','TS KNN']
+pipes=[tssvr,tsknn]
 
 titles = []
 for t in names:
