@@ -392,7 +392,7 @@ def pipeBuild_KNeighborsTimeSeriesRegressor(n_neighbors=[5], weights=['uniform']
   pipeline = Pipeline(steps=[('tsknnreg', regressor)])
   params = [{
         'tsknnreg__n_neighbors': n_neighbors,
-        'tsknnreg__ weights':  weights,
+        'tsknnreg__weights': weights,
         'tsknnreg__metric': metric,
         'tsknnreg__metric_params': metric_params,
         'tsknnreg__n_jobs': n_jobs,        
@@ -408,13 +408,13 @@ def pipeBuild_TimeSeriesSVR(C=[1.0], kernel=['gak'], degree=[3], gamma=['auto'],
   pipeline = Pipeline(steps=[('tssvr', regressor)])
   params = [{
         'tssvr__C': C,
-        'tssvr__ kernel':  kernel,
+        'tssvr__kernel': kernel,
         'tssvr__degree': degree,
         'tssvr__gamma': gamma,
         'tssvr__coef0': coef0,        
         'tssvr__tol': tol,
         'tssvr__epsilon': epsilon,
-        'tssvr__ shrinking':  shrinking,
+        'tssvr__shrinking': shrinking,
         'tssvr__cache_size': cache_size,
         'tssvr__n_jobs': n_jobs,              
         'tssvr__verbose': verbose,

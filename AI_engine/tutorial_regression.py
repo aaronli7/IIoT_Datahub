@@ -102,7 +102,7 @@ lars = skr.pipeBuild_Lars()
 lasso = skr.pipeBuild_Lasso(selection=['cyclic','random'])
 
 #TS LEARN REGRESSORS
-tssvr = skr.pipeBuild_TimeSeriesSVR()
+tssvr = skr.pipeBuild_TimeSeriesSVR(kernel=['rbf'])
 tsknn = skr.pipeBuild_KNeighborsTimeSeriesRegressor(weights=['distance'])
 
 
