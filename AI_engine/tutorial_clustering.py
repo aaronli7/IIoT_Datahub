@@ -59,6 +59,13 @@ y = data[:, -1] # label
 n_classes = int(np.amax(y)+1)
 print("number of classes is ",n_classes)
 
+print("Test array for NaN...",np.isnan(np.min(x)))
+
+#np.savetxt('3class.csv', data, delimiter=',')
+
+#n = np.where(x == np.nan)
+#print("location of NaNs: ",n)
+
 #print("shape of x is ",x.shape)
 #print("shape of y is ",y.shape)
 
@@ -76,18 +83,20 @@ X_train, X_test, y_train, y_test = train_test_split(x, y, test_size=0.20, random
 #SK LEARN
 kmeans = skcl.pipeBuild_KMeans(n_clusters=[n_classes])
 affprop = skcl.pipeBuild_AffinityPropagation()
+dbscan = skcl.pipeBuild_DBSCAN()
 
 #TS LEARN
 kernelKmeans = skcl.pipeBuild_KernelKMeans(n_clusters=[n_classes])
 tskmeans = skcl.pipeBuild_TimeSeriesKMeans(n_clusters=[n_classes])
+kshape = skcl.pipeBuild_KShape(n_clusters=[n_classes])
 
 # Run All
-#names = ['K Means','Kernel K Means','TS K Means','Affinity Propigation']
-#pipes = [kmeans,kernelKmeans,tskmeans,affprop]
+#names = ['K Means','Kernel K Means','TS K Means','K Shape','Affinity Propigation','DBSCAN']
+#pipes = [kmeans,kernelKmeans,tskmeans,kshape,affprop,dbscan]
 
 # Run One
-names=['Affinity Propigation']
-pipes=[affprop]
+names=['DBSCAN']
+pipes=[dbscan]
 
 titles = []
 for t in names:
@@ -124,8 +133,8 @@ for j in range(len(names)):
     score = grid_search.score(X_test, y_test)
     print("Best parameter (CV score=%0.3f):" % grid_search.best_score_)
     print(grid_search.best_params_)
-    y_pred = grid_search.predict(X_test)
-    print(classification_report(y_test, y_pred))
+    #y_pred = grid_search.predict(X_test)
+    #print(classification_report(y_test, y_pred))
     ConfusionMatrixDisplay.from_estimator(grid_search, X_test, y_test, xticks_rotation="vertical")
     
     #if j == 0:
