@@ -61,6 +61,8 @@ print("number of classes is ",n_classes)
 
 print("Test array for NaN...",np.isnan(np.min(x)))
 
+x_axis = np.arange(len(x[0]))
+
 #np.savetxt('3class.csv', data, delimiter=',')
 
 #n = np.where(x == np.nan)
@@ -75,7 +77,7 @@ x = (x - x.mean(axis=0)) / x.std(axis=0)
 # Use line below with PV_Data Only
 #x = np.delete(x, 799999, 1)  # delete second column of C
 
-X_train, X_test, y_train, y_test = train_test_split(x, y, test_size=0.20, random_state=42)
+X_train, X_test, y_train, y_test = train_test_split(x, y, test_size=0.10, random_state=42)
 
 #print(x)
 #print(X_train)
@@ -84,6 +86,13 @@ X_train, X_test, y_train, y_test = train_test_split(x, y, test_size=0.20, random
 kmeans = skcl.pipeBuild_KMeans(n_clusters=[n_classes])
 affprop = skcl.pipeBuild_AffinityPropagation()
 dbscan = skcl.pipeBuild_DBSCAN()
+meanshift = skcl.pipeBuild_MeanShift()
+minikmeans = skcl.pipeBuild_MiniBatchKMeans(n_clusters=[n_classes])
+spectral = skcl.pipeBuild_SpectralClustering(n_clusters=[n_classes])
+bikmeans = skcl.pipeBuild_BisectingKMeans(n_clusters=[n_classes])
+aggclust = skcl.pipeBuild_AgglomerativeClustering(n_clusters=[n_classes])
+featagg = skcl.pipeBuild_FeatureAgglomeration(n_clusters=[n_classes])
+optics = skcl.pipeBuild_OPTICS()
 
 #TS LEARN
 kernelKmeans = skcl.pipeBuild_KernelKMeans(n_clusters=[n_classes])
@@ -91,12 +100,12 @@ tskmeans = skcl.pipeBuild_TimeSeriesKMeans(n_clusters=[n_classes])
 kshape = skcl.pipeBuild_KShape(n_clusters=[n_classes])
 
 # Run All
-#names = ['K Means','Kernel K Means','TS K Means','K Shape','Affinity Propigation','DBSCAN']
-#pipes = [kmeans,kernelKmeans,tskmeans,kshape,affprop,dbscan]
+#names = ['K Means','Kernel K Means','TS K Means','K Shape','Affinity Propigation','Mean Shift','Mini-Batch K Means','Bisecting K Means']
+#pipes = [kmeans,kernelKmeans,tskmeans,kshape,affprop,meanshift,minikmeans,bikmeans]
 
 # Run One
-names=['DBSCAN']
-pipes=[dbscan]
+names=['K Means']
+pipes=[kmeans]
 
 titles = []
 for t in names:
@@ -125,29 +134,43 @@ plt.show()
 
 #fig2, ax = plt.subplots(1,len(names))
 
+#fig = make_subplots(rows=n_classes, cols=2)
+
 # iterate over classifiers
 for j in range(len(names)):
-    
+    fig = make_subplots(rows=n_classes, cols=2)
+
     grid_search = GridSearchCV(estimator=pipes[j][0], param_grid=pipes[j][1], scoring='neg_mean_squared_error',cv=5, verbose=1, n_jobs=-1)
     grid_search.fit(X_train, y_train)
     score = grid_search.score(X_test, y_test)
     print("Best parameter (CV score=%0.3f):" % grid_search.best_score_)
     print(grid_search.best_params_)
-    #y_pred = grid_search.predict(X_test)
-    #print(classification_report(y_test, y_pred))
-    ConfusionMatrixDisplay.from_estimator(grid_search, X_test, y_test, xticks_rotation="vertical")
+    y_pred = grid_search.predict(X_test)
+    print(classification_report(y_test, y_pred))
+    #ConfusionMatrixDisplay.from_estimator(grid_search, X_test, y_test, xticks_rotation="vertical")
     
-    #if j == 0:
-    #    fig_0 = skb.plot_cv_results(grid_search.cv_results_, 'decision__criterion', 'decision__max_depth')
-    #elif j == 1:
-    #    fig_1 = skb.plot_cv_results(grid_search.cv_results_, 'random__criterion', 'random__max_depth')
+    count = 0
+    while count < len(y_pred):
+        #print("y_pred is ",int(y_pred[count]))
+        #print("y_test is ",int(y_test[count]))
+        fig.add_trace(
+            go.Scatter(x=x_axis,y=X_test[count]),
+            row=int(y_pred[count])+1, col=1
+        )
+        fig.add_trace(
+            go.Scatter(x=x_axis, y=X_test[count]),
+            row=int(y_test[count])+1, col=2
+        )
+        count = count + 1
 
-    #fpr, tpr, thresholds = roc_curve(y_test, y_pred)
-    #roc_auc = auc(fpr, tpr)
-    #RocCurveDisplay(fpr=fpr, tpr=tpr, roc_auc=roc_auc,estimator_name=grid_search)
-
-plt.tight_layout()
+    #fig.update_layout(title_text = names[j]+": Predicted vs Truth")
+    #f=0
+    #while f < n_classes:
+    #    fig.update_xaxes(title_text="Class "+str(f), row=f+1, col=1)
+    #    fig.update_xaxes(title_text="Class "+str(f), row=f+1, col=2)
+    fig.show()
+#plt.tight_layout()
 #st.pyplot(plt)
-plt.show()
-#fig2.show()
+#plt.show()
+#fig.show()
 #"""

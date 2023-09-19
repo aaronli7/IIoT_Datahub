@@ -14,7 +14,7 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.pipeline import make_pipeline
 from sklearn.pipeline import Pipeline
 from sklearn.datasets import make_moons, make_circles, make_classification
-from sklearn.cluster import AffinityPropagation, AgglomerativeClustering, DBSCAN, FeatureAgglomeration, KMeans, MeanShift, SpectralClustering
+from sklearn.cluster import AffinityPropagation, AgglomerativeClustering, BisectingKMeans, DBSCAN, FeatureAgglomeration, KMeans, MeanShift, MiniBatchKMeans, OPTICS, SpectralClustering
 #from sklearn.cluster import HDBSCAN
 
 from tslearn.clustering import KernelKMeans, KShape, TimeSeriesKMeans
@@ -35,6 +35,46 @@ def pipeBuild_KMeans(n_clusters=[8],init=['k-means++'], n_init=[10],max_iter=[30
         'kmeans__verbose': verbose,
         'kmeans__copy_x': copy_x,
         'kmeans__algorithm': algorithm,
+    }]
+  return pipeline, params
+
+# BISECTING K MEANS
+def pipeBuild_BisectingKMeans(n_clusters=[8], *, init=['random'], n_init=[1], random_state=None, max_iter=[300], 
+                              verbose=[0], tol=[0.0001], copy_x=[True], algorithm=['lloyd'], 
+                              bisecting_strategy=['biggest_inertia']):
+  clusterer = BisectingKMeans(random_state=random_state)
+  pipeline = Pipeline(steps=[('bikmeans', clusterer)])
+  params = [{
+        'bikmeans__n_clusters': n_clusters,
+        'bikmeans__init': init,
+        'bikmeans__max_iter': max_iter,
+        'bikmeans__copy_x': copy_x,
+        'bikmeans__verbose': verbose,
+        'bikmeans__algorithm': algorithm,        
+        'bikmeans__tol': tol,
+        'bikmeans__bisecting_strategy': bisecting_strategy,       
+        'bikmeans__n_init': n_init,
+    }]
+  return pipeline, params
+
+# MINI BATCH K MEANS
+def pipeBuild_MiniBatchKMeans(n_clusters=[8], *, init=['k-means++'], max_iter=[100], batch_size=[1024], verbose=[0], 
+                     compute_labels=[True], random_state=None, tol=[0.0], max_no_improvement=[10], 
+                     init_size=[None], n_init=['warn'], reassignment_ratio=[0.01]):
+  clusterer = MiniBatchKMeans(random_state=random_state)
+  pipeline = Pipeline(steps=[('mbkmeans', clusterer)])
+  params = [{
+        'mbkmeans__n_clusters': n_clusters,
+        'mbkmeans__init': init,
+        'mbkmeans__max_iter': max_iter,
+        'mbkmeans__batch_size': batch_size,
+        'mbkmeans__verbose': verbose,
+        'mbkmeans__compute_labels': compute_labels,        
+        'mbkmeans__tol': tol,
+        'mbkmeans__max_no_improvement': max_no_improvement,
+        'mbkmeans__init_size': init_size,        
+        'mbkmeans__n_init': n_init,
+        'mbkmeans__reassignment_ratio': reassignment_ratio,
     }]
   return pipeline, params
 
@@ -202,6 +242,30 @@ def pipeBuild_FeatureAgglomeration(n_clusters=[2], affinity=['deprecated'], metr
         'featagg__pooling_func': pooling_func,
         'featagg__distance_threshold': distance_threshold,
         'featagg__compute_distances': compute_distances,
+    }]
+  return pipeline, params
+
+# OPTICS
+def pipeBuild_OPTICS(min_samples=[5], max_eps=[np.inf], metric=['minkowski'], p=[2], metric_params=[None], 
+                     cluster_method=['xi'], eps=[None], xi=[0.05], predecessor_correction=[True], 
+                     min_cluster_size=[None], algorithm=['auto'], leaf_size=[30], memory=[None], n_jobs=[None]):
+  clusterer = OPTICS()
+  pipeline = Pipeline(steps=[('optics', clusterer)])
+  params = [{
+        'optics__min_samples': min_samples,
+        'optics__max_eps': max_eps,
+        'optics__metric': metric,
+        'optics__p': p,
+        'optics__metric_params': metric_params,
+        'optics__cluster_method': cluster_method,
+        'optics__eps': eps,
+        'optics__xi': xi,
+        'optics__predecessor_correction': predecessor_correction,
+        'optics__min_cluster_size': min_cluster_size,
+        'optics__algorithm': algorithm,
+        'optics__leaf_size': leaf_size,
+        'optics__memory': memory,
+        'optics__n_jobs': n_jobs,
     }]
   return pipeline, params
 
