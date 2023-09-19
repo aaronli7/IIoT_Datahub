@@ -125,16 +125,8 @@ samples = np.arange(len(X_train[0,:]))
 plt.plot(X_train[0,:]) 
 plt.plot(X_train[1,:]) 
 plt.plot(X_train[2,:]) 
-#fig1 = px.scatter(x = samples,y = X_train[0,:],title="Sample Data Entry")
-#st.plotly_chart(fig1)
 plt.show()
 
-# Plot Testing Set
-#fig1.append_trace(go.Scatter(x = X_test[:, 0],y = X_test[:, 1],),row=i,col=1)
-
-#fig2, ax = plt.subplots(1,len(names))
-
-#fig = make_subplots(rows=n_classes, cols=2)
 
 # iterate over classifiers
 for j in range(len(names)):
@@ -147,12 +139,9 @@ for j in range(len(names)):
     print(grid_search.best_params_)
     y_pred = grid_search.predict(X_test)
     print(classification_report(y_test, y_pred))
-    #ConfusionMatrixDisplay.from_estimator(grid_search, X_test, y_test, xticks_rotation="vertical")
     
     count = 0
     while count < len(y_pred):
-        #print("y_pred is ",int(y_pred[count]))
-        #print("y_test is ",int(y_test[count]))
         fig.add_trace(
             go.Scatter(x=x_axis,y=X_test[count]),
             row=int(y_pred[count])+1, col=1
@@ -163,14 +152,12 @@ for j in range(len(names)):
         )
         count = count + 1
 
-    #fig.update_layout(title_text = names[j]+": Predicted vs Truth")
-    #f=0
-    #while f < n_classes:
-    #    fig.update_xaxes(title_text="Class "+str(f), row=f+1, col=1)
-    #    fig.update_xaxes(title_text="Class "+str(f), row=f+1, col=2)
+    fig.update_layout(title_text = names[j]+": Predicted vs Truth")
+    f=0
+    while f < n_classes:
+        fig.update_xaxes(title_text="Class "+str(f), row=f+1, col=1)
+        fig.update_xaxes(title_text="Class "+str(f), row=f+1, col=2)
+    f = f + 1
     fig.show()
-#plt.tight_layout()
-#st.pyplot(plt)
-#plt.show()
-#fig.show()
+
 #"""
