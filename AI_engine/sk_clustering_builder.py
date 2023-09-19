@@ -22,7 +22,6 @@ from sklearn.cluster import AffinityPropagation, AgglomerativeClustering, Bisect
 from sklearn.model_selection import GridSearchCV
 from sklearn.metrics import ConfusionMatrixDisplay, classification_report, RocCurveDisplay, auc, roc_curve, roc_auc_score
 
-
 from tslearn.clustering import KernelKMeans, KShape, TimeSeriesKMeans
 
 import load_data as ld
@@ -1676,13 +1675,20 @@ def pipeBuild_HDBSCAN(min_cluster_size=[5], min_samples=[None], cluster_selectio
 
 if __name__ == '__main__':
   p = Path('.')
-  datapath = p / "AI_engine/test_data/"
+  datapath = p / "test_data/"
 
-  print("Please enter the file name.  Data files are located in the test_data folder")
-  f_name = input()
-  print(f_name," has been selected")
+  #print("Please enter the file name.  Data files are located in the test_data folder")
+  #f_name = input()
+  #print(f_name," has been selected")
   
-  file_name = datapath / f_name
+  if(len(sys.argv) <= 1):
+    progname = sys.argv[0]
+    print(f"Usage: python3 {progname} xxx.npy")
+    print(f"Example: python3 {progname} test_data/synthetic_dataset.npy")
+    quit()
+
+
+  file_name = datapath / sys.argv[1]
 
   data = ld.load(file_name)
 
