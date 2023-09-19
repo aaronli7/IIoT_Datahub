@@ -1,4 +1,3 @@
-*.npy
 *.csv
 .DS_Store
 *.pyc
@@ -8,3 +7,6 @@ dataset
 *.pt
 *.png
 *.zip
+AI_engine/save_npy_to_csv.py
+AI_engine/test_data/y.npy
+AI_engine/test_data/X.npy
