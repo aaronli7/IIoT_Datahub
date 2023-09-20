@@ -3673,7 +3673,6 @@ if __name__ == '__main__':
     print(f"Example: python3 {progname} test_data/synthetic_dataset.npy")
     quit()
 
-
   file_name = datapath / sys.argv[1]
 
   data = ld.load(file_name)
@@ -3702,10 +3701,10 @@ if __name__ == '__main__':
 
   X_train, X_test, y_train, y_test = train_test_split(x, y, test_size=0.10, random_state=42)
 
-  print("Please select the Clustering Algorithm you wish to run")
+  print("Please select the Classification Algorithm you wish to run")
   print("Algorithm List: ",algo_list)
   algo_name = input()
-  print("The select algorithm is: ",algo_name)
+  print("The selected algorithm is: ",algo_name)
 
   names = []
   pipes = []

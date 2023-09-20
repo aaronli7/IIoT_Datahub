@@ -3,6 +3,10 @@ import numpy as np
 import matplotlib.pyplot as plt
 from pathlib import Path
 
+from plotly.subplots import make_subplots
+import chart_studio.plotly as py
+import plotly.graph_objects as go
+
 import re
 import pytz
 from datetime import datetime
@@ -20,6 +24,14 @@ from sklearn.linear_model import ARDRegression, BayesianRidge, ElasticNet, Gamma
 
 from tslearn.neighbors import KNeighborsTimeSeriesRegressor
 from tslearn.svm import TimeSeriesSVR
+
+from sklearn.model_selection import GridSearchCV
+from sklearn.metrics import classification_report, auc, roc_curve, roc_auc_score
+from sklearn.metrics import PredictionErrorDisplay 
+
+import load_data as ld
+
+algo_list = ['svr','nusvr','linear svr','ridge','ridge cv','linear regression','sgd','ard','bayesian ridge','passive aggressive','gamma','poisson','tweedie','huber','quantile','ranscar','thielsen','elasticnet','lars','lasso','ts knn','ts svr']
 
 # All inputs execpt random_state should be lists of values, even if only one value
 
@@ -421,3 +433,162 @@ def pipeBuild_TimeSeriesSVR(C=[1.0], kernel=['gak'], degree=[3], gamma=['auto'],
         'tssvr__max_iter': max_iter, 
     }]
   return pipeline, params
+
+if __name__ == '__main__':
+  p = Path('.')
+  datapath = p / "test_data/"
+
+  #print("Please enter the file name.  Data files are located in the test_data folder")
+  #f_name = input()
+  #print(f_name," has been selected")
+  
+  if(len(sys.argv) <= 1):
+    progname = sys.argv[0]
+    print(f"Usage: python3 {progname} xxx.npy")
+    print(f"Example: python3 {progname} test_data/synthetic_dataset.npy")
+    quit()
+
+  file_name = datapath / sys.argv[1]
+
+  data = ld.load(file_name)
+
+  print("shape of  data is ",data.shape)
+
+  x = data[:, :data.shape[1]-1]  # data
+  y = data[:, -1] # label
+
+  n_classes = int(np.amax(y)+1)
+  print("number of classes is ",n_classes)
+
+  print("Test array for NaN...",np.isnan(np.min(x)))
+
+  x_axis = np.arange(len(x[0]))
+
+  plot = go.Figure()
+  plot.add_trace(go.Scatter(x=x_axis,y=x[0,:]))
+  plot.add_trace(go.Scatter(x=x_axis,y=x[1,:]))
+  plot.add_trace(go.Scatter(x=x_axis,y=x[2,:]))
+  plot.update_layout(title="Data: 1st three samples")
+  plot.show()
+
+  # Normalize Data
+  x = (x - x.mean(axis=0)) / x.std(axis=0)
+
+  X_train, X_test, y_train, y_test = train_test_split(x, y, test_size=0.10, random_state=42)
+
+  print("Please select the Regression Algorithm you wish to run")
+  print("Algorithm List: ",algo_list)
+  algo_name = input()
+  print("The selected algorithm is: ",algo_name)
+
+  names = []
+  pipes = []
+
+  if algo_name == 'svr':
+    svr = pipeBuild_SVR()
+    names.append('svr')
+    pipes.append(svr)
+  elif algo_name == 'nusvr':
+    nusvr = pipeBuild_NuSVR()
+    names.append('nusvr')
+    pipes.append(nusvr)
+  elif algo_name == 'linear svr':
+    linsvr = pipeBuild_LinearSVR()
+    names.append('linear svr')
+    pipes.append(linsvr)
+  elif algo_name == 'ridge':
+    ridge = pipeBuild_Ridge()
+    names.append('ridge')
+    pipes.append(ridge)
+  elif algo_name == 'ridge cv':
+    ridgecv = pipeBuild_RidgeCV()
+    names.append('ridge cv')
+    pipes.append(ridgecv)
+  elif algo_name == 'linear regression':
+    linreg = pipeBuild_LinearRegression()
+    names.append('linear regression')
+    pipes.append(linreg)
+  elif algo_name == 'sgd':
+    sgd = pipeBuild_SGDRegressor()
+    names.append('sgd')
+    pipes.append(sgd)
+  elif algo_name == 'ard':
+    ard = pipeBuild_ARDRegression()
+    names.append('ard')
+    pipes.append(ard)
+  elif algo_name == 'bayesian ridge':
+    bayridge = pipeBuild_BayesianRidge()
+    names.append('bayesian ridge')
+    pipes.append(bayridge)
+  elif algo_name == 'passive aggressive':
+    par = pipeBuild_PassiveAggressiveRegressor()
+    names.append('passive aggressive')
+    pipes.append(par)
+  elif algo_name == 'gamma':
+    gamma = pipeBuild_GammaRegressor()
+    names.append('gamma')
+    pipes.append(gamma)
+  elif algo_name == 'poisson':
+    poisson = pipeBuild_PoissonRegressor()
+    names.append('poisson')
+    pipes.append(poisson)
+  elif algo_name == 'tweedie':
+    tweedie = pipeBuild_TweedieRegressor()
+    names.append('tweedie')
+    pipes.append(tweedie)
+  elif algo_name == 'huber':
+    huber = pipeBuild_HuberRegressor()
+    names.append('huber')
+    pipes.append(huber)
+  elif algo_name == 'quantile':
+    quantile = pipeBuild_QuantileRegressor()
+    names.append('quantile')
+    pipes.append(quantile)
+  elif algo_name == 'ranscar':
+    ranscar = pipeBuild_RANSACRegressor()
+    names.append('ranscar')
+    pipes.append(ranscar)
+  elif algo_name == 'thielsen':
+    thielsen = pipeBuild_TheilSenRegressor()
+    names.append('thielsen')
+    pipes.append(thielsen)
+  elif algo_name == 'elasticnet':
+    elasticnet = pipeBuild_ElasticNet()
+    names.append('elasticnet')
+    pipes.append(elasticnet)
+  elif algo_name == 'lars':
+    lars = pipeBuild_Lars()
+    names.append('lars')
+    pipes.append(lars)
+  elif algo_name == 'lasso':
+    lasso = pipeBuild_Lasso()
+    names.append('lasso')
+    pipes.append(lasso)
+  elif algo_name == 'ts knn':
+    tsknn = pipeBuild_TimeSeriesSVR(n_clusters=[n_classes])
+    names.append('ts knn')
+    pipes.append(tsknn)
+  elif algo_name == 'ts svr':
+    tssvr = pipeBuild_KNeighborsTimeSeriesRegressor()
+    names.append('ts svr')
+    pipes.append(tssvr)
+  else:
+    print("You have entered an incorrect algorithm name.  Please rerun the program and select an algoritm from the list")
+    exit
+
+  # iterate over classifiers
+  for j in range(len(names)):
+      fig = make_subplots(rows=n_classes, cols=2)
+
+      grid_search = GridSearchCV(estimator=pipes[j][0], param_grid=pipes[j][1], scoring='neg_mean_squared_error',cv=5, verbose=1, n_jobs=-1)
+      grid_search.fit(X_train, y_train)
+      score = grid_search.score(X_test, y_test)
+      print("Best parameter (CV score=%0.3f):" % grid_search.best_score_)
+      print(grid_search.best_params_)
+      y_pred = grid_search.predict(X_test)
+      PredictionErrorDisplay.from_estimator(grid_search, X_test, y_test)
+      best_title = 'Best Model: ' + names[j]
+      plt.title(best_title) 
+      
+  plt.tight_layout()
+  plt.show()

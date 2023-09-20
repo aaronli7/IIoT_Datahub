@@ -1719,7 +1719,7 @@ if __name__ == '__main__':
   print("Please select the Clustering Algorithm you wish to run")
   print("Algorithm List: ",algo_list)
   algo_name = input()
-  print("The select algorithm is: ",algo_name)
+  print("The selected algorithm is: ",algo_name)
 
   names = []
   pipes = []
