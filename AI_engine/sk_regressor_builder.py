@@ -660,47 +660,6 @@ def pipeBuild_OrthogonalMatchingPursuitCV(copy=[True], fit_intercept=[True], nor
     }]
   return pipeline, params
 
-# MULTITASK ELASTICNET
-def pipeBuild_MultiTaskElasticNet(alpha=[1.0], l1_ratio=[0.5], fit_intercept=[True], copy_X=[True], 
-                                        max_iter=[1000], tol=[0.0001], warm_start=[False], random_state=None, 
-                                        selection=['cyclic']):
-  regressor = MultiTaskElasticNet(random_state=random_state)
-  pipeline = Pipeline(steps=[('mten', regressor)])
-  params = [{
-        'mten_alpha': alpha,
-        'mten__l1_ratio': l1_ratio,
-        'mten__fit_intercept': fit_intercept,
-        'mten__copy_X': copy_X,
-        'mten__max_iter': max_iter,
-        'mten__tol': tol,        
-        'mten__warm_start': warm_start,
-        'mten__selection': selection,
-    }]
-  return pipeline, params
-
-# MULTITASK ELASTICNET CV
-def pipeBuild_MultiTaskElasticNetCV(l1_ratio=[0.5], eps=[0.001], n_alphas=[100], alphas=[None], 
-                                    fit_intercept=[True], max_iter=[1000], tol=[0.0001], cv=[None], 
-                                    copy_X=[True], verbose=[0], n_jobs=[None], random_state=None, 
-                                    selection=[BayesianRidge]):
-  regressor = MultiTaskElasticNetCV()
-  pipeline = Pipeline(steps=[('mtencv', regressor)])
-  params = [{        
-        'mtencv__l1_ratio': l1_ratio,
-        'mtencv_eps': eps,
-        'mtencv_n_alphas': n_alphas,
-        'mtencv_alphas': n_alphas,
-        'mtencv__fit_intercept': fit_intercept,        
-        'mtencv__max_iter': max_iter,
-        'mtencv__tol': tol,
-        'mtencv__cv': cv,
-        'mtencv__copy_X': copy_X,        
-        'mtencv__verbose': verbose,
-        'mtencv__n_jobs': n_jobs,
-        'mtencv__selection': selection,
-    }]
-  return pipeline, params
-
 if __name__ == '__main__':
   p = Path('.')
   datapath = p / "test_data/"
