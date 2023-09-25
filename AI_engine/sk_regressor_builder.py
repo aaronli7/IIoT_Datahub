@@ -394,10 +394,10 @@ def pipeBuild_MultiTaskElasticNet(alpha=[1.0], l1_ratio=[0.5], fit_intercept=[Tr
   params = [{
         'mten__alpha': alpha,
         'mten__l1_ratio': l1_ratio,
-        'mten__fit_intercept': fit_intercept,        
-        'mten__copy_X': copy_X, 
+        'mten__fit_intercept': fit_intercept,
+        'mten__copy_X': copy_X,
         'mten__max_iter': max_iter,
-        'mten__tol': tol, 
+        'mten__tol': tol,
         'mten__warm_start': warm_start,
         'mten__selection': selection,
     }]
