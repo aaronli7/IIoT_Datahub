@@ -374,7 +374,7 @@ def pipeBuild_ElasticNetCV(l1_ratio=[0.5], eps=[0.001], n_alphas=[100], alphas=[
         'elasticcv__alphas': alphas,
         'elasticcv__fit_intercept': fit_intercept,
         'elasticcv__precompute': precompute,
-        'elastic__max_iter': max_iter,               
+        'elasticcv__max_iter': max_iter,               
         'elasticcv__tol': tol,
         'elasticcv__cv': cv,
         'elasticcv__copy_X': copy_X, 
