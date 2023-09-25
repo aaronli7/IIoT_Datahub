@@ -20,7 +20,7 @@ from sklearn.pipeline import Pipeline
 from sklearn.datasets import make_moons, make_circles, make_classification
 from sklearn.gaussian_process.kernels import RBF
 from sklearn.svm import SVR, NuSVR, LinearSVR
-from sklearn.linear_model import ARDRegression, BayesianRidge, ElasticNet, GammaRegressor, HuberRegressor, Lars, Lasso, LinearRegression, PassiveAggressiveRegressor, PoissonRegressor, QuantileRegressor, RANSACRegressor, Ridge, RidgeCV, SGDRegressor, TheilSenRegressor, TweedieRegressor
+from sklearn.linear_model import ARDRegression, BayesianRidge, ElasticNet, ElasticNetCV, MultiTaskElasticNet, MultiTaskElasticNetCV, GammaRegressor, HuberRegressor, Lars, LarsCV, Lasso, LassoCV, LassoLars, LassoLarsCV, LassoLarsIC, LinearRegression, OrthogonalMatchingPursuit, OrthogonalMatchingPursuitCV, PassiveAggressiveRegressor, Perceptron, PoissonRegressor, QuantileRegressor, RANSACRegressor, Ridge, RidgeCV, SGDRegressor, TheilSenRegressor, TweedieRegressor
 
 from tslearn.neighbors import KNeighborsTimeSeriesRegressor
 from tslearn.svm import TimeSeriesSVR
@@ -31,7 +31,7 @@ from sklearn.metrics import PredictionErrorDisplay
 
 import load_data as ld
 
-algo_list = ['svr','nusvr','linear svr','ridge','ridge cv','linear regression','sgd','ard','bayesian ridge','passive aggressive','gamma','poisson','tweedie','huber','quantile','ranscar','thielsen','elasticnet','lars','lasso','ts knn','ts svr']
+algo_list = ['svr','nusvr','linear svr','ridge','ridge cv','linear regression','sgd','ard','bayesian ridge','passive aggressive','gamma','poisson','tweedie','huber','quantile','ranscar','thielsen','elasticnet','elasticnet cv','multitask elastic net','multitask elastic net cv','lars','lasso','lasso cv','lasso lars','lasso lars cv','lasso lars ic','orthogonal matching pursuit','orthogonal matching pursuit cv','ts knn','ts svr','perceptron']
 
 # All inputs execpt random_state should be lists of values, even if only one value
 
@@ -361,6 +361,70 @@ def pipeBuild_ElasticNet(alpha=[1.0],l1_ratio=[0.5],fit_intercept=[True],precomp
     }]
   return pipeline, params
 
+# ELASTICNET CV
+def pipeBuild_ElasticNetCV(l1_ratio=[0.5], eps=[0.001], n_alphas=[100], alphas=[None], fit_intercept=[True], 
+                           precompute=['auto'], max_iter=[1000], tol=[0.0001], cv=[None], copy_X=[True], 
+                           verbose=[0], n_jobs=[None], positive=[False], random_state=None, selection=['cyclic']):
+  regressor = ElasticNetCV(random_state=random_state)
+  pipeline = Pipeline(steps=[('elasticcv', regressor)])
+  params = [{
+        'elasticcv__l1_ratio': l1_ratio,
+        'elasticcv__eps': eps,
+        'elasticcv__n_alphas': n_alphas,
+        'elasticcv__alphas': alphas,
+        'elasticcv__fit_intercept': fit_intercept,
+        'elasticcv__precompute': precompute,
+        'elastic__max_iter': max_iter,               
+        'elasticcv__tol': tol,
+        'elasticcv__cv': cv,
+        'elasticcv__copy_X': copy_X, 
+        'elasticcv__verbose': verbose,
+        'elasticcv__n_jobs': n_jobs,
+        'elasticcv__positive': positive,
+        'elasticcv__selection': selection,
+    }]
+  return pipeline, params
+
+# MULTITASK ELASTICNET
+def pipeBuild_MultiTaskElasticNet(alpha=[1.0], l1_ratio=[0.5], fit_intercept=[True], copy_X=[True], 
+                                  max_iter=[1000], tol=[0.0001], warm_start=[False], 
+                                  random_state=None, selection=['cyclic']):
+  regressor = MultiTaskElasticNet(random_state=random_state)
+  pipeline = Pipeline(steps=[('mten', regressor)])
+  params = [{
+        'mten__alpha': alpha,
+        'mten__l1_ratio': l1_ratio,
+        'mten__fit_intercept': fit_intercept,        
+        'mten__copy_X': copy_X, 
+        'mten__max_iter': max_iter,
+        'mten__tol': tol, 
+        'mten__warm_start': warm_start,
+        'mten__selection': selection,
+    }]
+  return pipeline, params
+
+# MULTITASK ELASTICNET CV
+def pipeBuild_MultiTaskElasticNetCV(l1_ratio=[0.5], eps=[0.001], n_alphas=[100], alphas=[None], 
+                                    fit_intercept=[True], max_iter=[1000], tol=[0.0001], cv=[None], 
+                                    copy_X=[True], verbose=[0], n_jobs=[None], random_state=None, 
+                                    selection=['cyclic']):
+  regressor = MultiTaskElasticNetCV(random_state=random_state)
+  pipeline = Pipeline(steps=[('mtencv', regressor)])
+  params = [{        
+        'mtencv__l1_ratio': l1_ratio,
+        'mtencv__eps': eps,
+        'mtencv__n_alphas': n_alphas,
+        'mtencv__alphas': alphas,
+        'mtencv__fit_intercept': fit_intercept,
+        'mtencv__max_iter': max_iter,
+        'mtencv__tol': tol,     
+        'mtencv__copy_X': copy_X, 
+        'mtencv__verbose': verbose,
+        'mtencv__n_jobs': n_jobs,
+        'mtencv__selection': selection,
+    }]
+  return pipeline, params
+
 # LARS
 def pipeBuild_Lars(fit_intercept=[True],verbose=[False],precompute=['auto'],
     n_nonzero_coefs=[500],eps=[np.finfo(float).eps],copy_X=[True], fit_path=[True],jitter=[None],
@@ -379,21 +443,153 @@ def pipeBuild_Lars(fit_intercept=[True],verbose=[False],precompute=['auto'],
     }]
   return pipeline, params
 
+# LARS CV
+def pipeBuild_LarsCV(fit_intercept=[True], verbose=[False], max_iter=[500], normalize=['deprecated'], 
+                     precompute=['auto'], cv=[None], max_n_alphas=[1000], n_jobs=[None], 
+                     eps=[2.220446049250313e-16], copy_X=[True]):    
+  regressor = LarsCV()
+  pipeline = Pipeline(steps=[('larscv', regressor)])
+  params = [{
+        'larscv__fit_intercept': fit_intercept,
+        'larscv__verbose': verbose,
+        'larscv__max_iter': max_iter,        
+        'larscv__normalize':normalize,
+        'larscv__precompute': precompute,
+        'larscv__cv': cv,
+        'larscv__max_n_alphas': max_n_alphas,
+        'larscv__n_jobs': n_jobs,
+        'larscv__eps': eps, 
+        'larscv__copy_X': copy_X,
+    }]
+  return pipeline, params
+
 # LASSO
 def pipeBuild_Lasso(alpha=[1.0],fit_intercept=[True],precompute=[False],max_iter=[1000],
     copy_X=[True],tol=[1.0e-4],warm_start=[False],positive=[False], random_state=None,selection=['cyclic']):
   regressor = Lasso(random_state=random_state)
-  pipeline = Pipeline(steps=[('elastic', regressor)])
+  pipeline = Pipeline(steps=[('lasso', regressor)])
   params = [{
-        'elastic__alpha': alpha,
-        'elastic__fit_intercept': fit_intercept,
-        'elastic__precompute': precompute,
-        'elastic__max_iter': max_iter,
-        'elastic__copy_X': copy_X,        
-        'elastic__tol': tol,
-        'elastic__warm_start': warm_start,
-        'elastic__positive': positive,
-        'elastic__selection': selection,
+        'lasso__alpha': alpha,
+        'lasso__fit_intercept': fit_intercept,
+        'lasso__precompute': precompute,
+        'lasso__max_iter': max_iter,
+        'lasso__copy_X': copy_X,        
+        'lasso__tol': tol,
+        'lasso__warm_start': warm_start,
+        'lasso__positive': positive,
+        'lasso__selection': selection,
+    }]
+  return pipeline, params
+
+# LASSO CV
+def pipeBuild_LassoCV(eps=[0.001], n_alphas=[100], alphas=[None], fit_intercept=[True], precompute=['auto'], 
+                      max_iter=[1000], tol=[0.0001], copy_X=[True], cv=[None], verbose=[False], n_jobs=[None], 
+                      positive=[False], random_state=None, selection=['cyclic']):
+  regressor = LassoCV(random_state=random_state)
+  pipeline = Pipeline(steps=[('lassocv', regressor)])
+  params = [{
+        'lassocv__eps': eps,
+        'lassocv__n_alphas': n_alphas,
+        'lassocv__alphas': alphas,
+        'lassocv__fit_intercept': fit_intercept,
+        'lassocv__precompute': precompute,
+        'lassocv__max_iter': max_iter,
+        'lassocv__tol': tol,
+        'lassocv__copy_X': copy_X,        
+        'lassocv__cv': cv,
+        'lassocv__verbose': verbose,
+        'lassocv__n_jobs': n_jobs,
+        'lassocv__positive': positive,
+        'lassocv__selection': selection,
+    }]
+  return pipeline, params
+
+# LASSO LARS
+def pipeBuild_LassoLars(alpha=[1.0], *, fit_intercept=[True], verbose=[False], normalize=['deprecated'], 
+                        precompute=['auto'], max_iter=[500], eps=[2.220446049250313e-16], copy_X=[True], 
+                        fit_path=[True], positive=[False], jitter=[None], random_state=None):
+  regressor = LassoLars(random_state=random_state)
+  pipeline = Pipeline(steps=[('lassolars', regressor)])
+  params = [{
+        'lassolars__alpha': alpha,
+        'lassolars__fit_intercept': fit_intercept,
+        'lassolars__verbose': verbose,
+        'lassolars__normalize': normalize,
+        'lassolars__precompute': precompute,
+        'lassolars__max_iter': max_iter,
+        'lassolars__eps': eps,
+        'lassolars__copy_X': copy_X,        
+        'lassolars__fit_path': fit_path,
+        'lassolars__positive': positive,
+        'lassolars__jitter': jitter,
+    }]
+  return pipeline, params
+
+# LASSO LARS CV
+def pipeBuild_LassoLarsCV(fit_intercept=[True], verbose=[False], max_iter=[500], normalize=['deprecated'], 
+                          precompute=['auto'], cv=[None], max_n_alphas=[1000], n_jobs=[None], 
+                          eps=[2.220446049250313e-16], copy_X=[True], positive=[False]):
+  regressor = LassoLarsCV()
+  pipeline = Pipeline(steps=[('lassolarscv', regressor)])
+  params = [{        
+        'lassolarscv__fit_intercept': fit_intercept,
+        'lassolarscv__verbose': verbose,
+        'lassolarscv__max_iter': max_iter,
+        'lassolarscv__normalize': normalize,
+        'lassolarscv__precompute': precompute,
+        'lassolarscv__cv': cv,
+        'lassolarscv__max_n_alphas': max_n_alphas,
+        'lassolarscv__n_jobs': n_jobs,
+        'lassolarscv__eps': eps,
+        'lassolarscv__copy_X': copy_X,
+        'lassolarscv__positive': positive,
+    }]
+  return pipeline, params
+
+# LASSO LARS IC
+def pipeBuild_LassoLarsIC(criterion=['aic'], *, fit_intercept=[True], verbose=[False], normalize=['deprecated'], 
+                          precompute=['auto'], max_iter=[500], eps=[2.220446049250313e-16], copy_X=[True], 
+                          positive=[False], noise_variance=[None]):
+  regressor = LassoLarsIC()
+  pipeline = Pipeline(steps=[('lassolarsic', regressor)])
+  params = [{        
+        'lassolarsic__criterion': criterion,
+        'lassolarsic__fit_intercept': fit_intercept,
+        'lassolarsic__verbose': verbose,        
+        'lassolarsic__normalize': normalize,
+        'lassolarsic__precompute': precompute,
+        'lassolarsic__max_iter': max_iter,
+        'lassolarsic__eps': eps,
+        'lassolarsic__copy_X': copy_X,
+        'lassolarsic__positive': positive,
+        'lassolarsic__noise_variance': noise_variance,
+    }]
+  return pipeline, params
+
+# PERCEPTRON
+def pipeBuild_Perceptron(penalty=[None], alpha=[0.0001], l1_ratio=[0.15], fit_intercept=[True], max_iter=[1000], 
+                         tol=[0.001], shuffle=[True], verbose=[0], eta0=[1.0], n_jobs=[None], random_state=0, 
+                         early_stopping=[False], validation_fraction=[0.1], n_iter_no_change=[5],
+                         class_weight=[None], warm_start=[False]):
+  regressor = Perceptron(random_state=random_state)
+  pipeline = Pipeline(steps=[('perceptron', regressor)])
+  params = [{
+        'perceptron__penalty': penalty,
+        'perceptron__alpha': alpha,
+        'perceptron__l1_ratio': l1_ratio,
+        'perceptron__fit_intercept': fit_intercept,
+        'perceptron__max_iter': max_iter,
+        'perceptron__tol': tol,
+        'perceptron__shuffle': shuffle,
+        'perceptron__verbose': verbose,                
+        'perceptron__tol': tol,
+        'perceptron__eta0': eta0,
+        'perceptron__n_jobs': n_jobs,
+        'perceptron__early_stopping': early_stopping,
+        'perceptron__validation_fraction': validation_fraction,
+        'perceptron__n_iter_no_change': n_iter_no_change,
+        'perceptron__class_weight': class_weight,
+        'perceptron__warm_start': warm_start,
     }]
   return pipeline, params
 
@@ -431,6 +627,77 @@ def pipeBuild_TimeSeriesSVR(C=[1.0], kernel=['gak'], degree=[3], gamma=['auto'],
         'tssvr__n_jobs': n_jobs,              
         'tssvr__verbose': verbose,
         'tssvr__max_iter': max_iter, 
+    }]
+  return pipeline, params
+
+# ORTHOGANAL MATCHING PURSUIT
+def pipeBuild_OrthogonalMatchingPursuit(n_nonzero_coefs=[None], tol=[None], fit_intercept=[True], 
+                                        normalize=['deprecated'], precompute=['auto']):
+  regressor = OrthogonalMatchingPursuit()
+  pipeline = Pipeline(steps=[('omp', regressor)])
+  params = [{
+        'omp__n_nonzero_coefs': n_nonzero_coefs,
+        'omp__tol': tol,
+        'omp__fit_intercept': fit_intercept,
+        'omp__normalize': normalize,
+        'omp__precompute': precompute,
+    }]
+  return pipeline, params
+
+# ORTHOGANAL MATCHING PURSUIT CV
+def pipeBuild_OrthogonalMatchingPursuitCV(copy=[True], fit_intercept=[True], normalize=['deprecated'], 
+                                          max_iter=[None], cv=[None], n_jobs=[None], verbose=[False]):
+  regressor = OrthogonalMatchingPursuitCV()
+  pipeline = Pipeline(steps=[('ompcv', regressor)])
+  params = [{
+        'ompcv__copy': copy,        
+        'ompcv__fit_intercept': fit_intercept,
+        'ompcv__normalize': normalize,
+        'ompcv__ max_iter':  max_iter,
+        'ompcv__cv': cv,
+        'ompcv__n_jobs': n_jobs,
+        'ompcv__verbose': verbose,
+    }]
+  return pipeline, params
+
+# MULTITASK ELASTICNET
+def pipeBuild_MultiTaskElasticNet(alpha=[1.0], l1_ratio=[0.5], fit_intercept=[True], copy_X=[True], 
+                                        max_iter=[1000], tol=[0.0001], warm_start=[False], random_state=None, 
+                                        selection=['cyclic']):
+  regressor = MultiTaskElasticNet(random_state=random_state)
+  pipeline = Pipeline(steps=[('mten', regressor)])
+  params = [{
+        'mten_alpha': alpha,
+        'mten__l1_ratio': l1_ratio,
+        'mten__fit_intercept': fit_intercept,
+        'mten__copy_X': copy_X,
+        'mten__max_iter': max_iter,
+        'mten__tol': tol,        
+        'mten__warm_start': warm_start,
+        'mten__selection': selection,
+    }]
+  return pipeline, params
+
+# MULTITASK ELASTICNET CV
+def pipeBuild_MultiTaskElasticNetCV(l1_ratio=[0.5], eps=[0.001], n_alphas=[100], alphas=[None], 
+                                    fit_intercept=[True], max_iter=[1000], tol=[0.0001], cv=[None], 
+                                    copy_X=[True], verbose=[0], n_jobs=[None], random_state=None, 
+                                    selection=[BayesianRidge]):
+  regressor = MultiTaskElasticNetCV()
+  pipeline = Pipeline(steps=[('mtencv', regressor)])
+  params = [{        
+        'mtencv__l1_ratio': l1_ratio,
+        'mtencv_eps': eps,
+        'mtencv_n_alphas': n_alphas,
+        'mtencv_alphas': n_alphas,
+        'mtencv__fit_intercept': fit_intercept,        
+        'mtencv__max_iter': max_iter,
+        'mtencv__tol': tol,
+        'mtencv__cv': cv,
+        'mtencv__copy_X': copy_X,        
+        'mtencv__verbose': verbose,
+        'mtencv__n_jobs': n_jobs,
+        'mtencv__selection': selection,
     }]
   return pipeline, params
 
@@ -556,14 +823,38 @@ if __name__ == '__main__':
     elasticnet = pipeBuild_ElasticNet()
     names.append('elasticnet')
     pipes.append(elasticnet)
+  elif algo_name == 'elasticnet cv':
+    elasticnetcv = pipeBuild_ElasticNetCV()
+    names.append('elasticnet cv')
+    pipes.append(elasticnetcv)
   elif algo_name == 'lars':
     lars = pipeBuild_Lars()
     names.append('lars')
-    pipes.append(lars)
+    pipes.append(lars)  
+  elif algo_name == 'lars cv':
+    larscv = pipeBuild_LarsCV()
+    names.append('lars cv')
+    pipes.append(larscv)
   elif algo_name == 'lasso':
     lasso = pipeBuild_Lasso()
     names.append('lasso')
     pipes.append(lasso)
+  elif algo_name == 'lasso cv':
+    lassocv = pipeBuild_LassoCV()
+    names.append('lasso cv')
+    pipes.append(lassocv)
+  elif algo_name == 'lasso lars':
+    lassolars = pipeBuild_LassoLars()
+    names.append('lasso lars')
+    pipes.append(lassolars)
+  elif algo_name == 'lasso lars cv':
+    lassolarscv = pipeBuild_LassoLarsCV()
+    names.append('lasso lars cv')
+    pipes.append(lassolarscv)
+  elif algo_name == 'lasso lars ic':
+    lassolarsic = pipeBuild_LassoLarsIC()
+    names.append('lasso lars ic')
+    pipes.append(lassolarsic)
   elif algo_name == 'ts knn':
     tsknn = pipeBuild_TimeSeriesSVR(n_clusters=[n_classes])
     names.append('ts knn')
@@ -572,6 +863,26 @@ if __name__ == '__main__':
     tssvr = pipeBuild_KNeighborsTimeSeriesRegressor()
     names.append('ts svr')
     pipes.append(tssvr)
+  elif algo_name == 'perceptron':
+    perceptron = pipeBuild_Perceptron()
+    names.append('perceptron')
+    pipes.append(perceptron)
+  elif algo_name == 'orthogonal matching pursuit':
+    omp = pipeBuild_OrthogonalMatchingPursuit()
+    names.append('orthogonal matching pursuit')
+    pipes.append(omp)
+  elif algo_name == 'orthogonal matching pursuit cv':
+    ompcv = pipeBuild_OrthogonalMatchingPursuitCV()
+    names.append('orthogonal matching pursuit cv')
+    pipes.append(ompcv)
+  elif algo_name == 'multitask elastic net':
+    mten = pipeBuild_MultiTaskElasticNet()
+    names.append('multitask elastic net')
+    pipes.append(mten)
+  elif algo_name == 'multitask elastic net cv':
+    mtencv = pipeBuild_MultiTaskElasticNetCV()
+    names.append('multitask elastic net cv')
+    pipes.append(mtencv)
   else:
     print("You have entered an incorrect algorithm name.  Please rerun the program and select an algoritm from the list")
     exit
