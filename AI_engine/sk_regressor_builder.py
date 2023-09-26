@@ -645,15 +645,14 @@ def pipeBuild_OrthogonalMatchingPursuit(n_nonzero_coefs=[None], tol=[None], fit_
   return pipeline, params
 
 # ORTHOGANAL MATCHING PURSUIT CV
-def pipeBuild_OrthogonalMatchingPursuitCV(copy=[True], fit_intercept=[True], normalize=['deprecated'], 
+def pipeBuild_OrthogonalMatchingPursuitCV(copy=[True], fit_intercept=[True], 
                                           max_iter=[None], cv=[None], n_jobs=[None], verbose=[False]):
   regressor = OrthogonalMatchingPursuitCV()
   pipeline = Pipeline(steps=[('ompcv', regressor)])
   params = [{
         'ompcv__copy': copy,        
         'ompcv__fit_intercept': fit_intercept,
-        'ompcv__normalize': normalize,
-        'ompcv__ max_iter':  max_iter,
+        'ompcv__max_iter':  max_iter,
         'ompcv__cv': cv,
         'ompcv__n_jobs': n_jobs,
         'ompcv__verbose': verbose,
