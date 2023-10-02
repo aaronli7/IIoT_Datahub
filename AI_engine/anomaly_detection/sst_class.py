@@ -39,7 +39,7 @@ class SstDetector(BaseEstimator, OutlierMixin):
                 self.state=0
             states.append(self.state)
             cnt += 1
-        print("states: ",states)
+        #print("states: ",states)
         return np.array(states)  # returns array of either 0 or 1 / normal or abnormal
     
     def predict(self, X, y=None):
@@ -64,4 +64,5 @@ class SstDetector(BaseEstimator, OutlierMixin):
         self.current_score, self.x = SingularSpectrumTransformation(win_length=self.win_length,x0=self.x,
             n_components=self.n_components,order=self.order,lag=self.lag,is_scaled=self.is_scaled,
             use_lanczos=self.use_lanczos,rank_lanczos=self.rank_lanczos,eps=self.eps).score_online(X)
+        #print("score: ",self.current_score)
         return self.current_score # returns the score
