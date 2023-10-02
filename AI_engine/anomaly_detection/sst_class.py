@@ -38,7 +38,7 @@ class SstDetector(BaseEstimator, OutlierMixin):
             #    self.state=1 
             #else:
             #    self.state=0
-            if y[i] == 0:
+            if y[cnt] == 0:
                 state_0.append(self.current_score)
             else:
                 state_1.append(self.current_score)
