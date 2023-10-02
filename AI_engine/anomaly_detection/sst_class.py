@@ -3,7 +3,7 @@ from anomaly_detection.fastsst.sst import *
 
 class SstDetector(BaseEstimator, OutlierMixin):
 
-    def __init__(self,  win_length, threshold, order, n_components, lag,is_scaled, use_lanczos, rank_lanczos, eps, **kwargs):
+    def __init__(self,  win_length, order, n_components, lag,is_scaled, use_lanczos, rank_lanczos, eps, threshold=0, **kwargs):
         self.kwargs = kwargs
         # grid search attributes
         self.threshold = threshold        
@@ -24,7 +24,8 @@ class SstDetector(BaseEstimator, OutlierMixin):
         self.x = 0
 
     def fit(self, X, y=None):
-        states = []
+        state_0 = []
+        state_1 = []
         cnt = 0
         if cnt == 0:
             temp = np.random.rand(self.order)
@@ -33,14 +34,27 @@ class SstDetector(BaseEstimator, OutlierMixin):
         for i in X:
             self.predict_proba(i, y)
             # Check to see if score is above threshold, if so, anomally has occured
-            if self.current_score >= self.threshold:
-                self.state=1 
+            #if self.current_score >= self.threshold:
+            #    self.state=1 
+            #else:
+            #    self.state=0
+            if y[i] == 0:
+                state_0.append(self.current_score)
             else:
-                self.state=0
-            states.append(self.state)
+                state_1.append(self.current_score)
             cnt += 1
+        average_of_zeros = np.average(np.array(state_0))
+        average_of_ones = np.average(np.array(state_1))
+        if average_of_ones >= average_of_zeros:
+            diff = abs(average_of_ones - average_of_zeros)
+            threshold = average_of_zeros + diff
+        else:
+            diff = average_of_zeros - average_of_ones
+            threshold = abs(average_of_ones + diff)
+        self.threshold = threshold
         #print("states: ",states)
-        return np.array(states)  # returns array of either 0 or 1 / normal or abnormal
+        #return np.array(states)  # returns array of either 0 or 1 / normal or abnormal
+        return
     
     def predict(self, X, y=None):
         states = []

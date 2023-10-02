@@ -201,7 +201,8 @@ if __name__ == '__main__':
   pipes = []
 
   if algo_name == 'sst':
-    sst = pipeBuild_SstDetector(y = y_train, win_length = 20, order=[10], threshold=[0.1,0.75,1.0,5.0,10.0,50.0], is_scaled = [True],lag=[10])
+    sst = pipeBuild_SstDetector(y = y_train, win_length = 20, order=[10], is_scaled = [True],lag=[10])
+    #threshold=[0.1,0.75,1.0,5.0,10.0,50.0], 
     names.append('sst')
     pipes.append(sst)
   elif algo_name == 'one class svm':
