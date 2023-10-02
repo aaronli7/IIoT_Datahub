@@ -39,6 +39,7 @@ class SstDetector(BaseEstimator, OutlierMixin):
                 self.state=0
             states.append(self.state)
             cnt += 1
+        print("states: ",states)
         return np.array(states)  # returns array of either 0 or 1 / normal or abnormal
     
     def predict(self, X, y=None):

@@ -19,8 +19,17 @@ from sklearn.linear_model import SGDOneClassSVM
 from sklearn.neighbors import LocalOutlierFactor
 from sklearn.covariance import EllipticEnvelope
 from sklearn.ensemble import IsolationForest
+from sklearn.metrics import ConfusionMatrixDisplay, classification_report
+
+from plotly.subplots import make_subplots
+import plotly.graph_objects as go
+import plotly.express as px
 
 from anomaly_detection import sst_class as sst
+
+import load_data as ld
+
+algo_list = ['one class svm','sgd one class svm','sst','lof novelty','lof outlier','elliptic envelope','isolation forest']
 
 # All inputs execpt random_state should be lists of values, even if only one value
 
@@ -140,3 +149,102 @@ def pipeBuild_IsolationForest(n_estimators=[100],max_samples=['auto'], contamina
        
     }]
   return pipeline, params
+
+if __name__ == '__main__':
+  p = Path('.')
+  datapath = p / "test_data/"
+
+  #print("Please enter the file name.  Data files are located in the test_data folder")
+  #f_name = input()
+  #print(f_name," has been selected")
+  
+  if(len(sys.argv) <= 1):
+    progname = sys.argv[0]
+    print(f"Usage: python3 {progname} xxx.npy")
+    print(f"Example: python3 {progname} test_data/synthetic_dataset.npy")
+    quit()
+
+  file_name = datapath / sys.argv[1]
+
+  data = ld.load(file_name)
+
+  print("shape of  data is ",data.shape)
+
+  x = data[:, :data.shape[1]-1]  # data
+  y = data[:, -1] # label
+
+  n_classes = int(np.amax(y)+1)
+  print("number of classes is ",n_classes)
+
+  print("Test array for NaN...",np.isnan(np.min(x)))
+
+  x_axis = np.arange(len(x[0]))
+
+  plot = go.Figure()
+  plot.add_trace(go.Scatter(x=x_axis,y=x[0,:]))
+  plot.add_trace(go.Scatter(x=x_axis,y=x[1,:]))
+  plot.add_trace(go.Scatter(x=x_axis,y=x[2,:]))
+  plot.update_layout(title="Data: 1st three samples")
+  plot.show()
+
+  # Normalize Data
+  x = (x - x.mean(axis=0)) / x.std(axis=0)
+
+  X_train, X_test, y_train, y_test = train_test_split(x, y, test_size=0.10, random_state=42)
+
+  print("Please select the Regression Algorithm you wish to run")
+  print("Algorithm List: ",algo_list)
+  algo_name = input()
+  print("The selected algorithm is: ",algo_name)
+
+  names = []
+  pipes = []
+
+  if algo_name == 'sst':
+    sst = pipeBuild_SstDetector(win_length = 20, order=[10], threshold=[0.1,0.75,1.0,5.0,10.0,50.0], is_scaled = [True],lag=[10])
+    names.append('sst')
+    pipes.append(sst)
+  elif algo_name == 'one class svm':
+    onesvm = pipeBuild_OneClassSVM()
+    names.append('one class svm')
+    pipes.append(onesvm)
+  elif algo_name == 'sgd one class svm':
+    sgd1svm = pipeBuild_SGDOneClassSVM()
+    names.append('sgd one class svm')
+    pipes.append(sgd1svm)
+  elif algo_name == 'lof novelty':
+    lofn = pipeBuild_LocalOutlierFactor(novelty=[True])
+    names.append('lof novelty')
+    pipes.append(lofn)
+  elif algo_name == 'lof outlier':
+    lofo = pipeBuild_LocalOutlierFactor(novelty=[False])
+    names.append('lof outlier')
+    pipes.append(lofo)
+  elif algo_name == 'elliptic envelope':
+    ellipenv = pipeBuild_EllipticEnvelope()
+    names.append('elliptic envelope')
+    pipes.append(ellipenv)
+  elif algo_name == 'isolation forest':
+    sgd = pipeBuild_IsolationForest()
+    names.append('isolation forest')
+    pipes.append(sgd)  
+  else:
+    print("You have entered an incorrect algorithm name.  Please rerun the program and select an algoritm from the list")
+    exit
+
+  # iterate over classifiers
+  for j in range(len(names)):
+      fig = make_subplots(rows=n_classes, cols=2)
+
+      grid_search = GridSearchCV(estimator=pipes[j][0], param_grid=pipes[j][1], scoring='neg_mean_squared_error',cv=5, verbose=1, n_jobs=-1)
+      grid_search.fit(X_train, y_train)
+      score = grid_search.score(X_test, y_test)
+      print("Best parameter (CV score=%0.3f):" % grid_search.best_score_)
+      print(grid_search.best_params_)
+      y_pred = grid_search.predict(X_test)
+      print(classification_report(y_test, y_pred))
+      best_title = 'Best Model: ' + names[j]
+      plt.title(best_title) 
+      
+  plt.tight_layout()
+  plt.show()
