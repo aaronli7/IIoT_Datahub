@@ -35,3 +35,11 @@ def delete_note():
             db.session.commit()
 
     return jsonify({})
+
+
+@views.route('/', methods=['POST'])
+def select_type():  
+    if request.method == 'POST': 
+        pass
+
+    return render_template("type.html", user=current_user)

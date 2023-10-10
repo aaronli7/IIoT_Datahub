@@ -1,0 +1,19 @@
+{% extends "base.html" %} {% block title %}Type{% endblock %} {% block content
+    %}
+    <h1 align="center">Choose the Model Type for Comparisons</h1>
+    <ul class="list-group list-group-flush" id="notes">
+      {% for note in user.notes %}
+      <li class="list-group-item">"Classification"</li>
+      <li class="list-group-item">"Clustering"</li>
+      <li class="list-group-item">"Novelty Detection"</li>  
+      <li class="list-group-item">"Outlier Detection"</li>
+      <li class="list-group-item">"Regression"</li>
+    </ul>
+    <form method="POST">
+      <textarea name="type" id="type" class="form-control"></textarea>
+      <br />
+      <div align="center">
+        <button type="submit" class="btn btn-primary">Select</button>
+      </div>
+    </form>
+    {% endblock %}
