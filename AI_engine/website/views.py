@@ -6,6 +6,7 @@ from .models import Note
 from . import db
 import json
 from pathlib import Path
+import os
 
 p = Path('.')
 datapath = p / "AI_engine/test_data/"
@@ -47,11 +48,11 @@ def upload_file():
         # If the user does not select a file, the browser submits an
         # empty file without a filename.
         if file.filename == '':
-            flash('No selected file')
+            flash('No selected file',category="error")
             return redirect(request.url)
         if file and allowed_file(file.filename):
             filename = secure_filename(file.filename)
-            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+            file.save(os.path.join(views.config['UPLOAD_FOLDER'], filename))
             return redirect(url_for('download_file', name=filename))
     return
 
