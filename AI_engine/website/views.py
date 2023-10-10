@@ -38,8 +38,8 @@ def delete_note():
 
 
 @views.route('/', methods=['POST'])
-def select_type():  
+def types():  
     if request.method == 'POST': 
         pass
 
-    return render_template("type.html", user=current_user)
+    return render_template("types.html", user=current_user)
