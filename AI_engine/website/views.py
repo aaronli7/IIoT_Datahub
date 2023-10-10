@@ -52,8 +52,9 @@ def upload_file():
             return redirect(request.url)
         if file and allowed_file(file.filename):
             filename = secure_filename(file.filename)
-            file.save(os.path.join(views.config['UPLOAD_FOLDER'], filename))
-            return redirect(url_for('download_file', name=filename))
+            print("IM HERE-----------------------")
+            #file.save(os.path.join(views.config['UPLOAD_FOLDER'], filename))
+            return filename #redirect(url_for('download_file', name=filename))
     return
 
 @views.route('/delete-note', methods=['POST'])
