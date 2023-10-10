@@ -29,7 +29,7 @@ def home():
             db.session.commit()
             flash('Note added!', category='success')
 
-    return render_template("types.html", user=current_user)
+    return render_template("data.html", user=current_user)
 
 
 def allowed_file(filename):
