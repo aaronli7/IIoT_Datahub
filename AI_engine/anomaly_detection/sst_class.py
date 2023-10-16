@@ -26,25 +26,38 @@ class SstDetector(BaseEstimator, OutlierMixin):
     def fit(self, X, y=None):
         state_0 = []
         state_1 = []
+
+        j = 0
+        for l in y:
+            if l == 0:
+                state_0.append(X[j])
+            else:
+                state_1.append(X[j])    
+        
+        state0 = np.array(state_0)
+        y0 = np.zeros(len(state0))
+        state1 = np.array(state_1)
+        y1 = np.ones(len(state1))
+
+        zero_scores = []
         cnt = 0
         if cnt == 0:
             temp = np.random.rand(self.order)
             temp /= np.linalg.norm(temp)
             self.x = temp
-        for i in X:
-            self.predict_proba(i, y)
-            # Check to see if score is above threshold, if so, anomally has occured
-            #if self.current_score >= self.threshold:
-            #    self.state=1 
-            #else:
-            #    self.state=0
-            if y[cnt] == 0:
-                state_0.append(self.current_score)
-            else:
-                state_1.append(self.current_score)
-            cnt += 1
-        average_of_zeros = np.average(np.array(state_0))
-        average_of_ones = np.average(np.array(state_1))
+        for i in state0:
+            self.predict_proba(i, y0)
+            zero_scores.append(self.current_score)
+        average_of_zeros = np.average(np.array(zero_scores))
+
+        one_scores = []
+        ct = 0
+        for n in state1:
+            self.predict_proba(n,y1)
+            one_scores.append(self.current_score)
+            self.current_score = average_of_zeros
+        average_of_ones = np.average(np.array(one_scores))
+
         if average_of_ones >= average_of_zeros:
             diff = abs(average_of_ones - average_of_zeros)
             threshold = average_of_zeros + diff
