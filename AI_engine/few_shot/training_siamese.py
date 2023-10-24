@@ -20,9 +20,29 @@ from loader import tripletDataset
 from model import SiameseNet
 from training import model_train_multiclass
 
-save_model_path = "saved_models/new_snn/"
-X = np.load('dataset/8cases_jinan/new_training_set/X_norm.npy')
-y = np.load('dataset/8cases_jinan/new_training_set/y.npy')
+#save_model_path = "saved_models/new_snn/"
+#X = np.load('dataset/8cases_jinan/new_training_set/X_norm.npy')
+# = np.load('dataset/8cases_jinan/new_training_set/y.npy')
+
+from pathlib import Path
+#import load_data as ld
+
+p = Path('.')
+datapath = p / "AI_engine/test_data/"
+
+save_eval_path = p / "AI_engine/evaluation_results/"
+save_model_path = p / "AI_engine/saved_models/"
+datapath = p / "AI_engine/test_data/"
+
+#data = np.load(datapath/'X.npy')#ld.selectFileAndLoad()
+#print("shape of  data is ",data.shape)
+
+#X = data[:, :data.shape[1]-1]  # data
+#y = data[:, -1] # label
+
+X = np.load(datapath/'X.npy')
+y = np.load(datapath/'y.npy')
+#save_model_path = p
 
 X_train, X_cv, y_train, y_cv = train_test_split(X, y, train_size=0.75, test_size=0.25, shuffle=True, random_state=27)
 trainset = tripletDataset(X_train, y_train)

@@ -38,6 +38,8 @@ save_eval_path = p / "evaluation_results"
 save_model_path = p / "saved_models"
 
 x = load_data.load('X.npy')
+print("x type is ",type(x))
+print("shape of x is ",x.shape)
 y = load_data.load('y.npy')
 
 # normalization on input data x
