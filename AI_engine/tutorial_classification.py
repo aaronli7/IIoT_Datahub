@@ -106,8 +106,8 @@ rad = skb.pipeBuild_RadiusNeighborsClassifier(radius=[10])
 
 #TS LEARN
 early = skb.pipeBuild_NonMyopicEarlyClassifier(n_clusters=[n_classes])
-tsknn = skb.pipeBuild_KNeighborsTimeSeriesClassifier()
-tssvc = skb.pipeBuild_TimeSeriesSVC()
+tsknn = skb.pipeBuild_KNeighborsTimeSeriesClassifier(n_neighbors=[3,5,10],weights=['uniform','distance'],metric=['dtw','softdtw','ctw','euclidean','sqeuclidean','cityblock','sax'])
+tssvc = skb.pipeBuild_TimeSeriesSVC(kernel=['linear', 'poly', 'rbf', 'sigmoid'])
 
 # Run All
 #names = ['Decision Tree','Random Forest','KNN','Gaussian','AdaBoost','GaussianNB','QDA','SVC','MLP','NuSVC','Bagging','Extra Trees','Gradient Boost','Hist Grad Boost','Bernoulli NB','N. Centroid','PassAgress','LDA','SGD','Radius NN','Non-Myopic Early','TS KNN','TS SVC']
@@ -118,8 +118,8 @@ tssvc = skb.pipeBuild_TimeSeriesSVC()
 #pipes=[early,tsknn,tssvc]
 
 # Run One
-names=['TS SVC']
-pipes=[tssvc]
+names=['TS KNN']
+pipes=[tsknn]
 
 titles = []
 for t in names:
@@ -134,14 +134,15 @@ for t in names:
 
 samples = np.arange(len(X_train[0,:]))
 #print("samples: ",samples)
-
-# Plot Training Set
+"""
+# Plot Training Set 
 plt.plot(X_train[0,:]) 
 plt.plot(X_train[1,:]) 
 plt.plot(X_train[2,:]) 
 #fig1 = px.scatter(x = samples,y = X_train[0,:],title="Sample Data Entry")
 #st.plotly_chart(fig1)
-plt.show()
+plt.show()""
+#"""
 
 # Plot Testing Set
 #fig1.append_trace(go.Scatter(x = X_test[:, 0],y = X_test[:, 1],),row=i,col=1)

@@ -11,3 +11,5 @@ AI_engine/save_npy_to_csv.py
 AI_engine/test_data/y.npy
 AI_engine/test_data/X.npy
 AI_engine/convert_qi-data_to_novelty.py
+AI_engine/test_data/CAP.h5
+AI_engine/h5_loader.py
