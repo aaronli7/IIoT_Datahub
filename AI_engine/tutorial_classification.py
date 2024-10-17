@@ -12,6 +12,7 @@ from pathlib import Path
 import re
 import pytz
 from datetime import datetime
+from datetime import date
 
 import enum
 from matplotlib.colors import ListedColormap
@@ -57,8 +58,8 @@ save_model_path = p / "AI_engine/saved_models/"
 datapath = p / "AI_engine/test_data/"
 
 #data = np.load("C:/Users/steph/OneDrive/Documents/GitHub/IIoT_Datahub/AI_engine/test_data/synthetic_dataset.npy")
-#data = np.load(datapath / "synthetic_dataset.npy")
-data = ld.selectFileAndLoad()
+data = np.load(datapath / "synthetic_dataset.npy")
+#data = ld.selectFileAndLoad()
 
 print("shape of  data is ",data.shape)
 
@@ -118,8 +119,8 @@ tssvc = skb.pipeBuild_TimeSeriesSVC(kernel=['linear', 'poly', 'rbf', 'sigmoid'])
 #pipes=[early,tsknn,tssvc]
 
 # Run One
-names=['TS KNN']
-pipes=[tsknn]
+names=['Non-Myopic Early']
+pipes=[early]
 
 titles = []
 for t in names:
@@ -152,6 +153,10 @@ plt.show()""
 # iterate over classifiers
 for j in range(len(names)):
     
+    today = date.today()
+    now = today.strftime("%b-%d-%Y")
+    save_file = str(names[j]) + '-' + str(now) + '-HeatMap.png'
+
     grid_search = GridSearchCV(estimator=pipes[j][0], param_grid=pipes[j][1], scoring='neg_mean_squared_error',cv=5, verbose=1, n_jobs=-1)
     grid_search.fit(X_train, y_train)
     score = grid_search.score(X_test, y_test)
@@ -172,6 +177,8 @@ for j in range(len(names)):
 
 plt.tight_layout()
 #st.pyplot(plt)
-plt.show()
+#plt.show()
+print(save_eval_path / save_file)
+plt.savefig(save_eval_path / save_file)
 #fig2.show()
 #"""
