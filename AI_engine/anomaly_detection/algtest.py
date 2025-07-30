@@ -33,10 +33,10 @@ warnings.filterwarnings("ignore")
 
 #influxdb config
 token = "0ML4vBa-81dGKI3_wD-ReiSRdLggdJPXKoTKLPITBcOZXl8MJh7W8wFSkNUNM_uPS9mJpzvBxUKfKgie0dHiow=="
-org = "lab711"
+org = "711_1k"
 bucket = "testbed"
-url = "sensorwebdata.engr.uga.edu:8086"
-measurement = "detection_results"
+url = "sensordata.engr.uga.edu:8086"
+measurement = "waveform_Current"
 
 """
 client = influxdb_client.InfluxDBClient(
